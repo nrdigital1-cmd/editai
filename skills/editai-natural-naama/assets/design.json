@@ -1,0 +1,23 @@
+{
+  "brand": "Editai",
+  "creator": "Naamã",
+  "max_duration": 120,
+  "caption_size": 48,
+  "impact_size": 58,
+  "tracking_em": -0.05,
+  "light_background": false,
+  "layout": {
+    "head_top": 750,
+    "chin_y": 1100,
+    "caption_top": 1140,
+    "top_min": 280
+  },
+  "palette": {
+    "black": "#0A0A0A",
+    "gray": "#28282D",
+    "purple": "#8A2BE2",
+    "lime": "#BFFF00",
+    "off_white": "#F5F2EB"
+  },
+  "style": "natural"
+}

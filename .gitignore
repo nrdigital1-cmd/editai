@@ -1,0 +1,9 @@
+node_modules/
+__pycache__/
+.python/
+*.pyc
+kit/projetos/*
+!kit/projetos/.gitkeep
+kit/meus-videos/*
+!kit/meus-videos/.gitkeep
+perfil.json
