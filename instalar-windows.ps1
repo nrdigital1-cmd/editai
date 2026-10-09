@@ -5,8 +5,8 @@ $ErrorActionPreference = "Stop"
 $Pacote  = $PSScriptRoot
 $Editai  = Join-Path $env:USERPROFILE "Editai"
 $Venv    = Join-Path $Editai ".python"
-$Skills  = Join-Path $env:USERPROFILE ".claude\skills"
-$Total   = 6
+$Repositorio = "https://github.com/nrdigital1-cmd/editai.git"
+$Total   = 5
 
 function Etapa($n, $texto) { Write-Host ""; Write-Host "[$n/$Total] $texto" -ForegroundColor Cyan }
 function Ok($texto)    { Write-Host "  ok: $texto" -ForegroundColor Green }
@@ -39,12 +39,22 @@ foreach ($p in $programas) {
   Ok "$($p.nome) instalado"
 }
 
-# 2. Pasta de trabalho ---------------------------------------------------------
-Etapa 2 "Criando a pasta Editai na sua pasta de usuario"
+# 2. Editai: baixa do GitHub e monta a pasta de trabalho ------------------------
+Etapa 2 "Baixando o Editai e criando a pasta Editai na sua pasta de usuario"
 New-Item -ItemType Directory -Force $Editai | Out-Null
-# Copia o kit sem apagar videos e projetos que o aluno ja tenha
-robocopy (Join-Path $Pacote "kit") $Editai /E /XC /XN /XO /NFL /NDL /NJH /NJS /NP | Out-Null
-Ok "pasta pronta em $Editai"
+$Fonte = Join-Path $Editai ".fonte"
+if (-not (Test-Path (Join-Path $Fonte ".git"))) {
+  git clone -q $Repositorio $Fonte
+  if ($LASTEXITCODE -ne 0) {
+    # Sem internet para o GitHub: usa a copia do zip (atualizacoes ligam depois)
+    Write-Host "  nao consegui falar com o GitHub; usando os arquivos do zip"
+    robocopy $Pacote $Fonte /E /NFL /NDL /NJH /NJS /NP | Out-Null
+  }
+}
+# Copia kit e skills sem apagar videos, projetos e perfil do aluno
+python (Join-Path $Fonte "kit\ferramentas\atualizar.py") --sem-baixar
+if ($LASTEXITCODE -ne 0) { Falha "Nao consegui montar a pasta Editai. Rode o instalador de novo." }
+Ok "pasta pronta em $Editai e skills instaladas"
 
 # 3. Ferramenta de montagem ----------------------------------------------------
 Etapa 3 "Instalando a ferramenta de montagem (Hyperframes) - leva alguns minutos"
@@ -68,12 +78,6 @@ Etapa 5 "Baixando o modelo que reconhece a voz (cerca de 2 GB, so na primeira ve
 & $PyVenv (Join-Path $Editai "ferramentas\baixar-modelo.py")
 if ($LASTEXITCODE -ne 0) { Falha "O download do modelo parou. Confira a internet e rode de novo: ele continua de onde parou." }
 Ok "modelo de voz pronto"
-
-# 6. Skills --------------------------------------------------------------------
-Etapa 6 "Ensinando o Claude a editar (instalando as skills do Editai)"
-New-Item -ItemType Directory -Force $Skills | Out-Null
-Copy-Item -Recurse -Force (Join-Path $Pacote "skills\*") $Skills
-Ok "skills instaladas"
 
 # Teste final ------------------------------------------------------------------
 Write-Host ""

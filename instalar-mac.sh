@@ -6,8 +6,8 @@ set -e
 PACOTE="$(cd "$(dirname "$0")" && pwd)"
 EDITAI="$HOME/Editai"
 VENV="$EDITAI/.python"
-SKILLS="$HOME/.claude/skills"
-TOTAL=6
+REPOSITORIO="https://github.com/nrdigital1-cmd/editai.git"
+TOTAL=5
 
 etapa() { printf "\n\033[36m[%s/%s] %s\033[0m\n" "$1" "$TOTAL" "$2"; }
 ok()    { printf "  \033[32mok:\033[0m %s\n" "$1"; }
@@ -32,11 +32,21 @@ for par in "git:git" "node:node" "ffmpeg:ffmpeg" "python3:python@3.12"; do
   fi
 done
 
-# 2. Pasta de trabalho (sem apagar videos e projetos existentes)
-etapa 2 "Criando a pasta Editai na sua pasta de usuario"
+# 2. Editai: baixa do GitHub e monta a pasta de trabalho
+etapa 2 "Baixando o Editai e criando a pasta Editai na sua pasta de usuario"
 mkdir -p "$EDITAI"
-rsync -a --ignore-existing "$PACOTE/kit/" "$EDITAI/"
-ok "pasta pronta em $EDITAI"
+FONTE="$EDITAI/.fonte"
+if [ ! -d "$FONTE/.git" ]; then
+  if ! git clone -q "$REPOSITORIO" "$FONTE"; then
+    # Sem internet para o GitHub: usa a copia do zip (atualizacoes ligam depois)
+    echo "  nao consegui falar com o GitHub; usando os arquivos do zip"
+    mkdir -p "$FONTE" && rsync -a "$PACOTE/" "$FONTE/"
+  fi
+fi
+# Copia kit e skills sem apagar videos, projetos e perfil do aluno
+python3 "$FONTE/kit/ferramentas/atualizar.py" --sem-baixar \
+  || falha "Nao consegui montar a pasta Editai. Rode o instalador de novo."
+ok "pasta pronta em $EDITAI e skills instaladas"
 
 # 3. Ferramenta de montagem
 etapa 3 "Instalando a ferramenta de montagem (Hyperframes) - leva alguns minutos"
@@ -55,12 +65,6 @@ etapa 5 "Baixando o modelo que reconhece a voz (cerca de 2 GB, so na primeira ve
 "$VENV/bin/python" "$EDITAI/ferramentas/baixar-modelo.py" \
   || falha "O download do modelo parou. Confira a internet e rode de novo: ele continua de onde parou."
 ok "modelo de voz pronto"
-
-# 6. Skills
-etapa 6 "Ensinando o Claude a editar (instalando as skills do Editai)"
-mkdir -p "$SKILLS"
-cp -R "$PACOTE/skills/." "$SKILLS/"
-ok "skills instaladas"
 
 # Teste final
 printf "\n\033[36mTestando tudo...\033[0m\n"

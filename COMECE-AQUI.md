@@ -37,3 +37,7 @@ Deu erro ou a internet caiu? Escreva no Claude: **"Deu erro, continua a instala�
 | Skills do Editai | O manual que ensina o Claude a editar no estilo certo |
 
 Tudo é gratuito para uso pessoal e para criadores individuais.
+
+## Atualizações
+Quando sair uma melhoria, o Claude avisa no começo da edição. Você também pode escrever a qualquer momento:
+**"atualiza o Editai"**. Seus vídeos, projetos e perfil continuam intactos.
