@@ -8,11 +8,11 @@ Bem-vindo! Em uns 20 minutos seu computador vai estar pronto para editar vídeos
 - Assinatura do Claude (Pro ou Max) e o app do Claude instalado: claude.ai/download
 
 ## Instalação (uma vez só)
-1. Deixe este arquivo .zip na pasta **Downloads**. Não precisa extrair.
+1. Clique no botão **Baixar material** do curso. O arquivo `editai-main.zip` vai para a pasta **Downloads**. Não precisa extrair.
 2. Abra o app do Claude → aba **Code** → escolha a pasta **Downloads**.
 3. Copie o texto abaixo, cole no Claude e envie:
 
-> Instala o Editai para mim. O arquivo editai.zip está nesta pasta. Extraia, leia o COMECE-AQUI.md e rode o instalador do meu sistema (instalar-windows.ps1 no Windows ou instalar-mac.sh no Mac). Explique cada etapa em uma frase simples, sem termos técnicos. Se algo der erro, tente resolver e me diga o que aconteceu. No final, rode o teste do instalador e me confirme se está tudo pronto.
+> Instala o Editai para mim. O arquivo do Editai (editai-main.zip) está na pasta Downloads. Extraia, leia o COMECE-AQUI.md e rode o instalador do meu sistema (instalar-windows.ps1 no Windows ou instalar-mac.sh no Mac). Explique cada etapa em uma frase simples, sem termos técnicos. Se algo der erro, tente resolver e me diga o que aconteceu. No final, rode o teste do instalador e me confirme se está tudo pronto.
 
 4. Quando aparecer um pedido de permissão, clique em **Permitir**. No Windows, clique em **Sim** se o sistema perguntar. No Mac, digite a senha do computador se pedir (ela não aparece enquanto você digita, é normal).
 5. Espere aparecer **EDITAI PRONTO**.
