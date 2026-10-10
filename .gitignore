@@ -4,6 +4,6 @@ __pycache__/
 *.pyc
 kit/projetos/*
 !kit/projetos/.gitkeep
-kit/meus-videos/*
-!kit/meus-videos/.gitkeep
+kit/videos-sem-edicao/*
+!kit/videos-sem-edicao/.gitkeep
 perfil.json

@@ -15,7 +15,7 @@ REPOSITORIO = "https://github.com/nrdigital1-cmd/editai.git"
 EDITAI = Path.home() / "Editai"
 FONTE = EDITAI / ".fonte"          # copia do GitHub, o aluno nao mexe aqui
 SKILLS = Path.home() / ".claude" / "skills"
-PASTAS_DO_ALUNO = {"meus-videos", "projetos", "perfil.json", ".python", "node_modules", ".fonte"}
+PASTAS_DO_ALUNO = {"videos-sem-edicao", "projetos", "perfil.json", ".python", "node_modules", ".fonte"}
 
 
 def git(*args, capturar=True):

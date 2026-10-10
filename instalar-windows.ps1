@@ -89,4 +89,4 @@ Write-Host ""
 Write-Host "EDITAI PRONTO!" -ForegroundColor Green
 Write-Host "1. Feche e abra o app do Claude."
 Write-Host "2. Aba Code > escolha a pasta $Editai"
-Write-Host "3. Coloque seu video em meus-videos e escreva: edita meu video"
+Write-Host "3. Coloque seu video em videos-sem-edicao e escreva: edita meu video"

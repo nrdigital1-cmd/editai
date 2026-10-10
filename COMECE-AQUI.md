@@ -22,7 +22,7 @@ Deu erro ou a internet caiu? Escreva no Claude: **"Deu erro, continua a instala�
 ## Para editar um vídeo
 1. Feche e abra o Claude de novo.
 2. Aba **Code** → escolha a pasta **Editai** (fica na sua pasta de usuário).
-3. Coloque seu vídeo na pasta `meus-videos`.
+3. Coloque seu vídeo na pasta `videos-sem-edicao`.
 4. Escreva: **"edita meu vídeo"** e responda as perguntas.
 
 ## O que o instalador coloca no seu computador

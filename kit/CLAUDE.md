@@ -4,7 +4,7 @@ Esta pasta é onde o aluno edita vídeos com as skills do Editai.
 
 - Python: use sempre o Python do Editai, que já tem o transcritor instalado.
   Windows: `.python\Scripts\python.exe` · Mac: `.python/bin/python`
-- Vídeos brutos ficam em `meus-videos/`. Crie cada projeto em `projetos/<nome-do-video>/`.
+- Vídeos brutos ficam em `videos-sem-edicao/`. Crie cada projeto em `projetos/<nome-do-video>/`.
 - `perfil.json` fica na raiz desta pasta.
 - Quando o aluno disser "edita meu vídeo" sem escolher o estilo, pergunte numa frase qual ele quer:
   **natural** (dia a dia, prints reais), **anúncio** (venda, oferta) ou **motion** (animações que explicam, tipografia animada).
@@ -23,4 +23,4 @@ Esta pasta é onde o aluno edita vídeos com as skills do Editai.
 - No começo de cada edição, rode `python ferramentas/atualizar.py --verificar`.
   Se aparecer "TEM ATUALIZACAO", pergunte numa frase: "Tem novidade no Editai, quer atualizar antes de editar?"
   Se não houver internet, siga com a edição sem comentar.
-- A atualização nunca mexe em `meus-videos`, `projetos` nem `perfil.json`.
+- A atualização nunca mexe em `videos-sem-edicao`, `projetos` nem `perfil.json`.
