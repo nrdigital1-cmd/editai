@@ -281,7 +281,7 @@ def build(a):
         return "full"
 
     lay = cfg["layout"]
-    captions, key_moves = [], []
+    captions, key_moves, cap_moves = [], [], []
     for n, (start, end, text) in enumerate(caption_chunks(transcript["words"], duration, emphasis, fixes)):
         where = layout_at(start)
         if where == "motion":
@@ -291,6 +291,7 @@ def build(a):
         top = lay["caption_top"] if where == "full" else lay["split_caption_top"]
         captions.append(f'<div id="cap-{n}" class="clip caption" data-start="{start:.3f}" '
                         f'data-duration="{end - start:.3f}" data-track-index="4" style="top:{top}px">{text}</div>')
+        cap_moves.append({"id": f"cap-{n}", "t": start, "d": min(0.24, (end - start) * 0.8)})
         if 'class="key"' in text:
             key_moves.append({"id": f"cap-{n}", "t": start, "d": min(0.3, (end - start) * 0.7)})
 
@@ -317,7 +318,7 @@ def build(a):
             raise ValueError("Cor inválida na paleta.")
     variables = {
         "DURATION": f"{duration:.3f}", "CAPTIONS": "\n".join(captions), "PANELS": "\n".join(panels),
-        "SCENE_SCRIPTS": "\n".join(scripts), "KEY_MOVES": json.dumps(key_moves), "SFX": sfx_tags(project, sfx_hits(scenes, key_moves), duration, cfg), "BLUR": "0.5" if modo_leve(cfg) else "1", "CAMERA": json.dumps(camera),
+        "SCENE_SCRIPTS": "\n".join(scripts), "KEY_MOVES": json.dumps(key_moves), "CAP_MOVES": json.dumps(cap_moves), "SFX": sfx_tags(project, sfx_hits(scenes, key_moves), duration, cfg), "BLUR": "0.5" if modo_leve(cfg) else "1", "CAMERA": json.dumps(camera),
         "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]),
         "FACE_Y": str(lay.get("face_y_percent", 30)),
         "ORANGE": pal["orange"], "BROWN": pal["brown"], "INK": pal["ink"], "PAPER": pal["off_white"],

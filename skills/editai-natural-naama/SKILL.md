@@ -25,3 +25,5 @@ Cada animação precisa ter um motivo: mostrar o que a pessoa está falando naqu
 - **Ênfase na legenda:** quando a palavra de impacto aparece sobre a pessoa, ela entra MAIOR na linha de baixo da palavra anterior, subindo pouco (≈14 px), rápida e suave.
 - **Motion profissional:** entradas que desaceleram, motion blur na entrada e na saída, deriva contínua e saídas encadeadas (ver identidade visual).
 - **Efeitos sonoros:** whoosh nas trocas de cena e entradas de elementos, pop nas palavras de impacto, em volume baixo e confortável sob a voz (automático no build; `"sfx": false` desliga, `"sfx_volume"` ajusta).
+- **12 princípios da animação:** para cada animação, escolha o princípio que melhor serve à fala e anote no plano (ver [princípios](references/principios.md)).
+- **Legenda corrida:** cada legenda entra subindo bem pouco (≈12 px), com aceleração e desaceleração, limpa e elegante, estilo Apple — nunca seca.

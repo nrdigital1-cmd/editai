@@ -33,7 +33,7 @@ for(const m of motions){
   const b=(m.blur||0)*BLUR;
   /* entrada: chega rapido e desacelera (expo.out); o desfoque some junto com a velocidade */
   timeline.fromTo('#'+m.id,{y:m.y,scale:m.scale,opacity:0,filter:'blur('+b+'px)'},
-    {y:0,scale:1,opacity:1,filter:'blur(0px)',duration:m.duration,ease:'expo.out',immediateRender:false},m.start);
+    {y:0,scale:1,opacity:1,filter:'blur(0px)',duration:m.duration,ease:m.ease||'expo.out',immediateRender:false},m.start);
   if(m.drift&&m.end){
     const hold=m.end-m.start-m.duration-0.3;
     /* deriva sutil: nada fica congelado na tela */

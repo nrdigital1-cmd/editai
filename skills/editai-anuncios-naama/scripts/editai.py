@@ -235,6 +235,8 @@ def build(a):
             motions.append({"id": f"imp-{i}", "start": start, "duration": min(0.32, (end - start) * 0.7), "y": 14, "scale": 1, "blur": 4})
         else:
             captions.append(f'<div id="word-{i}" class="clip caption" data-start="{start:.3f}" data-duration="{end-start:.3f}" data-track-index="2">{html.escape(text)}</div>')
+            # Legenda corrida: sobe pouco, acelera e desacelera (estilo Apple)
+            motions.append({"id": f"word-{i}", "start": start, "duration": min(0.24, (end - start) * 0.8), "y": 12, "scale": 1, "blur": 2, "ease": "power2.inOut"})
     hits = [(m["start"], "pop") for m in motions if m["id"].startswith("imp-")]
     beats = read(project / "assets" / "beats.json") if (project / "assets" / "beats.json").exists() else []
     overlays = []

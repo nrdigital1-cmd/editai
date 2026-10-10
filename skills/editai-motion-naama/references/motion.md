@@ -70,6 +70,7 @@ E.wordScene(tl, el, [
 ```
 
 ## 5. Tipografia cinética: como deixar profissional
+- Palavras **bem grandes**: 180–260 px nas normais, 260–340 px na de impacto (quebre em 2 linhas se não couber em 950 px de largura).
 - Varie **tamanho, posição e peso** a cada palavra; nunca todas no mesmo lugar.
 - Palavra de impacto: maior, laranja Scholar Italic, entra um pouco mais lenta.
 - Ritmo acompanha a fala: a palavra entra no instante em que é dita.
@@ -87,3 +88,10 @@ Exemplos que ilustram falas comuns:
 
 Snapshots em todas as trocas de cena e no meio de cada animação (`npx hyperframes snapshot --at ...`).
 Confira: legenda legível, rosto livre, texto dentro da área segura, vidro visível sobre o fundo, nenhum glow.
+
+## 8. Transições complementares entre telas
+A saída de uma tela e a entrada da seguinte formam **um movimento só**, com aceleração na saída e desaceleração na entrada:
+- Mesmo sentido: se a tela sai **para cima** (`E.exit`, `y` negativo, `power2.in`), a próxima entra **vindo de baixo** (`E.enter`, `y` positivo, `expo.out`) — o olho continua o mesmo fluxo.
+- Se sai para a esquerda, a próxima entra pela direita; se a última palavra cresce ao sair, a primeira da próxima tela começa grande e assenta.
+- A saída começa ~0,25 s antes do corte e a entrada termina ~0,5 s depois: o pico de velocidade fica exatamente no corte, onde entra o whoosh.
+- Elementos internos seguem o mesmo sentido da tela, com `stagger` (follow through).
