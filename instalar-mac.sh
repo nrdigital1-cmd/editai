@@ -57,7 +57,7 @@ ok "ferramenta de montagem pronta"
 etapa 4 "Instalando o transcritor de voz (Whisper)"
 [ -x "$VENV/bin/python" ] || python3 -m venv "$VENV"
 "$VENV/bin/python" -m pip install --quiet --upgrade pip
-"$VENV/bin/python" -m pip install --quiet faster-whisper
+"$VENV/bin/python" -m pip install --quiet "faster-whisper==1.2.1" "av==15.1.0"
 ok "transcritor instalado"
 
 # 5. Modelo de voz

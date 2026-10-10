@@ -73,15 +73,18 @@ def transcribe(a):
     print("Transcrevendo localmente — esta etapa pode levar alguns minutos.", flush=True)
     name = a.model or ("small" if a.fast else "medium")
     # Exige modelo já armazenado; instalação/download é uma etapa separada.
+    def run_model(device, compute_type, **extra):
+        model = WhisperModel(name, device=device, compute_type=compute_type, local_files_only=True, **extra)
+        segments, info = model.transcribe(str(media), language="pt", word_timestamps=True, condition_on_previous_text=False, beam_size=1 if a.fast else 3, initial_prompt=a.names or None)
+        # A placa de video so falha de verdade ao processar: consome tudo aqui dentro
+        words = [{"text": w.word.strip(), "start": round(w.start, 3), "end": round(w.end, 3)} for s in segments for w in (s.words or [])]
+        return words, info
+
     try:
-        model = WhisperModel(name, device="cuda", compute_type="float16", local_files_only=True)
-    except (RuntimeError, ValueError):
-        model = WhisperModel(name, device="cpu", compute_type="int8", cpu_threads=max(1, min(4, os.cpu_count() or 1)), local_files_only=True)
-    segments, info = model.transcribe(str(media), language="pt", word_timestamps=True, condition_on_previous_text=False, beam_size=1 if a.fast else 3, initial_prompt=a.names or None)
-    words = []
-    for segment in segments:
-        for word in segment.words or []:
-            words.append({"text": word.word.strip(), "start": round(word.start, 3), "end": round(word.end, 3)})
+        words, info = run_model("cuda", "float16")
+    except (RuntimeError, ValueError, OSError):
+        print("Placa de vídeo indisponível; transcrevendo pelo processador.", flush=True)
+        words, info = run_model("cpu", "int8", cpu_threads=max(1, min(4, os.cpu_count() or 1)))
     write(out, {"source_sha256": fingerprint(media), "duration": info.duration, "words": words})
     out.with_suffix(".txt").write_text("\n".join(f'{w["start"]:.3f}–{w["end"]:.3f} {w["text"]}' for w in words), encoding="utf-8")
 

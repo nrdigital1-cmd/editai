@@ -70,7 +70,7 @@ Etapa 4 "Instalando o transcritor de voz (Whisper)"
 $PyVenv = Join-Path $Venv "Scripts\python.exe"
 if (-not (Test-Path $PyVenv)) { python -m venv $Venv }
 & $PyVenv -m pip install --quiet --upgrade pip
-& $PyVenv -m pip install --quiet faster-whisper
+& $PyVenv -m pip install --quiet "faster-whisper==1.2.1" "av==15.1.0"
 Ok "transcritor instalado"
 
 # 5. Modelo de voz -------------------------------------------------------------

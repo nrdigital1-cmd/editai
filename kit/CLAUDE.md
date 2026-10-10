@@ -6,9 +6,9 @@ Esta pasta é onde o aluno edita vídeos com as skills do Editai.
   Windows: `.python\Scripts\python.exe` · Mac: `.python/bin/python`
 - Vídeos brutos ficam em `meus-videos/`. Crie cada projeto em `projetos/<nome-do-video>/`.
 - `perfil.json` fica na raiz desta pasta.
-- Quando o aluno disser "edita meu vídeo" sem escolher o estilo, pergunte numa frase:
-  **natural** (conteúdo do dia a dia, prints reais) ou **anúncio** (venda, oferta, criativo).
-  Depois use a skill `editai-natural-naama` ou `editai-anuncios-naama`.
+- Quando o aluno disser "edita meu vídeo" sem escolher o estilo, pergunte numa frase qual ele quer:
+  **natural** (dia a dia, prints reais), **anúncio** (venda, oferta) ou **motion** (animações que explicam, tipografia animada).
+  Depois use a skill `editai-natural-naama`, `editai-anuncios-naama` ou `editai-motion-naama`.
 - Fale com o aluno em português simples, sem termos técnicos.
 
 ## Atualizações
