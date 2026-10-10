@@ -146,6 +146,31 @@ def fixes_text(fixes, i, words):
             return fix["text"].strip()
     return words[i]["text"].strip()
 
+# Volumes pensados para ficar audivel mas confortavel por baixo da voz (voz = 1)
+SFX_VOLUME = {"whoosh": 0.35, "pop": 0.14, "tick": 0.12}
+SFX_DUR = {"whoosh": 0.55, "pop": 0.18, "tick": 0.07}
+
+def sfx_tags(project, hits, duration, cfg):
+    """hits = [(tempo, tipo)]. Copia os sons da skill para o projeto e devolve as tags <audio>."""
+    if not cfg.get("sfx", True):
+        return ""
+    destino = project / "assets" / "sfx"
+    destino.mkdir(parents=True, exist_ok=True)
+    for som in SFX_VOLUME:
+        if not (destino / f"{som}.wav").exists():
+            shutil.copy(SKILL / "assets" / "sfx" / f"{som}.wav", destino / f"{som}.wav")
+    ganho = float(cfg.get("sfx_volume", 1.0))
+    tags, ultimo = [], {}
+    for n, (t, som) in enumerate(sorted(hits)):
+        # Um som de cada tipo por vez: evita encavalar e embolar
+        if t < 0 or t >= duration or t - ultimo.get(som, -9) < SFX_DUR[som] + 0.05:
+            continue
+        ultimo[som] = t
+        d = min(SFX_DUR[som], duration - t)
+        tags.append(f'<audio id="sfx-{n}" src="assets/sfx/{som}.wav" data-start="{t:.3f}" data-duration="{d:.3f}" '
+                    f'data-track-index="{ {"whoosh": 6, "pop": 7, "tick": 8}[som] }" data-volume="{SFX_VOLUME[som] * ganho:.3f}"></audio>')
+    return "\n".join(tags)
+
 def modo_leve(cfg):
     """PC fraco (poucos nucleos ou pouca memoria) exporta com menos blur. editai.json pode forcar: "modo_leve": true/false."""
     escolha = cfg.get("modo_leve", "auto")
@@ -210,6 +235,7 @@ def build(a):
             motions.append({"id": f"imp-{i}", "start": start, "duration": min(0.32, (end - start) * 0.7), "y": 14, "scale": 1, "blur": 4})
         else:
             captions.append(f'<div id="word-{i}" class="clip caption" data-start="{start:.3f}" data-duration="{end-start:.3f}" data-track-index="2">{html.escape(text)}</div>')
+    hits = [(m["start"], "pop") for m in motions if m["id"].startswith("imp-")]
     beats = read(project / "assets" / "beats.json") if (project / "assets" / "beats.json").exists() else []
     overlays = []
     for i, beat in enumerate(beats):
@@ -236,7 +262,7 @@ def build(a):
         raise ValueError("Execute npm install na pasta do projeto para instalar GSAP e Hyperframes.")
     shutil.copy(gsap, project / "assets" / "gsap.min.js")
     text = (project / "src" / "composition.html").read_text(encoding="utf-8")
-    variables = {"DURATION": str(duration), "CAPTIONS": "\n".join(captions), "OVERLAYS": "\n".join(overlays), "MOTIONS": json.dumps(motions), "BLUR": "0.5" if modo_leve(cfg) else "1", "STYLE": cfg["style"], "CAP_TOP": str(layout["caption_top"]), "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]), "SHADOW": "0 2px 8px rgba(0,0,0,.35)" if cfg["light_background"] else "none"}
+    variables = {"DURATION": str(duration), "CAPTIONS": "\n".join(captions), "OVERLAYS": "\n".join(overlays), "MOTIONS": json.dumps(motions), "SFX": sfx_tags(project, hits + [(m["start"] - 0.08, "whoosh") for m in motions if m["id"].startswith("beat-")], duration, cfg), "BLUR": "0.5" if modo_leve(cfg) else "1", "STYLE": cfg["style"], "CAP_TOP": str(layout["caption_top"]), "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]), "SHADOW": "0 2px 8px rgba(0,0,0,.35)" if cfg["light_background"] else "none"}
     for key, value in variables.items():
         text = text.replace("__" + key + "__", value)
     for key, value in cfg["palette"].items():

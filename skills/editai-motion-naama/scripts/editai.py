@@ -191,6 +191,31 @@ def caption_chunks(words, duration, emphasis, fixes, max_words=3, max_chars=18):
     return out
 
 
+# Volumes pensados para ficar audivel mas confortavel por baixo da voz (voz = 1)
+SFX_VOLUME = {"whoosh": 0.35, "pop": 0.14, "tick": 0.12}
+SFX_DUR = {"whoosh": 0.55, "pop": 0.18, "tick": 0.07}
+
+def sfx_tags(project, hits, duration, cfg):
+    """hits = [(tempo, tipo)]. Copia os sons da skill para o projeto e devolve as tags <audio>."""
+    if not cfg.get("sfx", True):
+        return ""
+    destino = project / "assets" / "sfx"
+    destino.mkdir(parents=True, exist_ok=True)
+    for som in SFX_VOLUME:
+        if not (destino / f"{som}.wav").exists():
+            shutil.copy(SKILL / "assets" / "sfx" / f"{som}.wav", destino / f"{som}.wav")
+    ganho = float(cfg.get("sfx_volume", 1.0))
+    tags, ultimo = [], {}
+    for n, (t, som) in enumerate(sorted(hits)):
+        # Um som de cada tipo por vez: evita encavalar e embolar
+        if t < 0 or t >= duration or t - ultimo.get(som, -9) < SFX_DUR[som] + 0.05:
+            continue
+        ultimo[som] = t
+        d = min(SFX_DUR[som], duration - t)
+        tags.append(f'<audio id="sfx-{n}" src="assets/sfx/{som}.wav" data-start="{t:.3f}" data-duration="{d:.3f}" '
+                    f'data-track-index="{ {"whoosh": 6, "pop": 7, "tick": 8}[som] }" data-volume="{SFX_VOLUME[som] * ganho:.3f}"></audio>')
+    return "\n".join(tags)
+
 def modo_leve(cfg):
     """PC fraco (poucos nucleos ou pouca memoria) exporta com menos blur. editai.json pode forcar: "modo_leve": true/false."""
     escolha = cfg.get("modo_leve", "auto")
@@ -216,6 +241,14 @@ def modo_leve(cfg):
     if leve:
         print("Modo leve: PC mais simples detectado, usando menos desfoque de movimento para exportar mais rápido.", flush=True)
     return leve
+
+def sfx_hits(scenes, key_moves):
+    hits = [(float(s["start"]) - 0.1, "whoosh") for s in scenes[1:]]
+    hits += [(k["t"], "pop") for k in key_moves]
+    for s in scenes:
+        # palavras de impacto dentro das cenas (E.wordScene com key:true)
+        hits += [(float(t), "pop") for t in re.findall(r"\{t:([\d.]+),[^}]*key:true", s.get("js", ""))]
+    return hits
 
 def build(a):
     project = Path(a.project)
@@ -284,7 +317,7 @@ def build(a):
             raise ValueError("Cor inválida na paleta.")
     variables = {
         "DURATION": f"{duration:.3f}", "CAPTIONS": "\n".join(captions), "PANELS": "\n".join(panels),
-        "SCENE_SCRIPTS": "\n".join(scripts), "KEY_MOVES": json.dumps(key_moves), "BLUR": "0.5" if modo_leve(cfg) else "1", "CAMERA": json.dumps(camera),
+        "SCENE_SCRIPTS": "\n".join(scripts), "KEY_MOVES": json.dumps(key_moves), "SFX": sfx_tags(project, sfx_hits(scenes, key_moves), duration, cfg), "BLUR": "0.5" if modo_leve(cfg) else "1", "CAMERA": json.dumps(camera),
         "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]),
         "FACE_Y": str(lay.get("face_y_percent", 30)),
         "ORANGE": pal["orange"], "BROWN": pal["brown"], "INK": pal["ink"], "PAPER": pal["off_white"],

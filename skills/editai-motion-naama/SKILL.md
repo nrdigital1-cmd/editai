@@ -1,6 +1,6 @@
 ---
 name: editai-motion-naama
-description: Editar vídeo vertical no estilo motion do Editai de Naamã — cortes secos, uma cena nova a cada 3 a 6 segundos, três composições (tela dividida com painel de vidro em cima, apresentador em tela cheia com legenda de 2 a 3 palavras no peito, e cena de motion em tela cheia sem o apresentador, com tipografia cinética, liquid, glitch ou texto 3D), fundo em gradiente com grade fina e painéis de vidro na paleta laranja, marrom e preto. Use quando o usuário pedir estilo motion, vídeo com animações que explicam, tipografia cinética, ou /editai-motion-naama.
+description: Editar vídeo vertical no estilo motion do Editai de Naamã — cortes secos, uma cena nova a cada 3 a 6 segundos, três composições (tela dividida com painel de vidro em cima, apresentador em tela cheia com legenda de 2 a 3 palavras no peito, e cena de tipografia cinética em tela cheia sem o apresentador, onde a palavra vira a cena), fundo em gradiente com grade fina e painéis de vidro na paleta laranja, marrom e preto. Use quando o usuário pedir estilo motion, vídeo com animações que explicam, tipografia cinética, ou /editai-motion-naama.
 ---
 
 # Editai — Motion · Naamã
@@ -15,7 +15,7 @@ Vídeo vertical 1080×1920 em que **cada animação mostra o que está sendo dit
 |---|---|---|
 | `split` — tela dividida | A fala explica algo que dá para mostrar: um processo, um antes e depois, um número | Painel de vidro na faixa de cima (y 150–850); apresentador num card com cantoneiras embaixo |
 | `full` — tela cheia | Fala pessoal, opinião, confissão, ponte entre ideias | Apresentador ocupando a tela; legenda no peito |
-| `motion` — sem apresentador | A ideia-chave do vídeo, o gancho visual, uma frase que precisa de impacto | Só fundo + tipografia cinética, liquid, glitch, texto 3D ou elementos animados. A voz continua |
+| `motion` — sem apresentador | A ideia-chave do vídeo, o gancho, uma frase que precisa de impacto | Só fundo + **tipografia cinética**: cada palavra dita ocupa a tela e se transforma na próxima. A voz continua |
 
 ## Regras
 - **Ritmo:** uma cena nova a cada 3–6 s. Alterne composições; nunca duas `motion` seguidas; `motion` dura 1,5–4 s.
@@ -29,3 +29,5 @@ Vídeo vertical 1080×1920 em que **cada animação mostra o que está sendo dit
 - Conferir snapshots de todas as trocas de cena antes de exportar. Entregar caminho do MP4, cortes feitos e pendências.
 - Antes do primeiro vídeo, perguntar se mantém a identidade visual do Editai ou usa cores e fontes próprias (ver fluxo). Nome e @ só quando uma cena for mostrar o perfil.
 - **Ênfase na legenda:** quando a palavra de impacto aparece sobre a pessoa, ela entra MAIOR na linha de baixo da palavra anterior, subindo pouco (≈14 px), rápida e suave.
+- **Efeitos sonoros:** whoosh nas trocas de cena e entradas de elementos, pop nas palavras de impacto, em volume baixo e confortável sob a voz (automático no build; `"sfx": false` desliga, `"sfx_volume"` ajusta).
+- **Só tipografia cinética** nas cenas sem apresentador: nada de texto 3D, liquid, glitch ou distorções.

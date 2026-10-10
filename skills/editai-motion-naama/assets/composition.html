@@ -63,19 +63,7 @@ html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--i
 /* Tipografia cinetica */
 .kt{position:absolute;white-space:nowrap;font-size:150px;line-height:.9;color:var(--paper)}
 .kt .ch{display:inline-block;will-change:transform}
-.extrude{color:var(--paper);text-shadow:
-  1px 1px 0 #d9d2c6,2px 2px 0 #c9bfb1,3px 3px 0 #b9ad9d,4px 4px 0 #a99a89,5px 5px 0 #998875,
-  6px 6px 0 #7d6a58,7px 7px 0 #5f4c3d,8px 8px 0 var(--brown),14px 18px 30px rgba(0,0,0,.5)}
-.glitch{position:absolute;white-space:nowrap}
-.glitch>span{position:absolute;left:0;top:0}
-.glitch>.g1{color:var(--orange);clip-path:inset(0 0 55% 0)}
-.glitch>.g2{color:var(--paper);clip-path:inset(55% 0 0 0)}
-.liquid{filter:url(#liquid)}
 </style></head><body>
-<svg width="0" height="0" style="position:absolute">
-  <filter id="liquid"><feTurbulence id="liquid-noise" type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7"/>
-  <feDisplacementMap id="liquid-map" in="SourceGraphic" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>
-</svg>
 <div id="editai" data-composition-id="editai" data-start="0" data-duration="__DURATION__" data-width="1080" data-height="1920">
 <div id="bg"></div><div id="grid"></div>
 <video id="camera" src="assets/clean.mp4" data-start="0" data-duration="__DURATION__" data-track-index="0" muted playsinline></video>
@@ -83,6 +71,7 @@ html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--i
 <div id="frame"><i></i><i></i><i></i><i></i></div>
 __PANELS__
 __CAPTIONS__
+__SFX__
 </div>
 <script>
 const timeline=gsap.timeline({paused:true});
@@ -130,11 +119,6 @@ const E={
   /* quebra o texto em letras para animar uma a uma (stagger) */
   chars(el){const t=el.textContent;el.textContent='';return [...t].map(ch=>{const s=document.createElement('span');
     s.className='ch';s.textContent=ch===' '?' ':ch;el.appendChild(s);return s;});},
-  /* glitch digital: deslocamentos curtos e deterministicos (sem Math.random) */
-  glitch(tl,el,t0,dur=0.4){const g=el.querySelectorAll('span');const steps=[[-14,10],[12,-8],[-6,4],[0,0]];
-    steps.forEach((s,k)=>{tl.set(g[0],{x:s[0]},t0+k*dur/steps.length);tl.set(g[1],{x:s[1]},t0+k*dur/steps.length);});},
-  /* liquid typography: distorce e assenta o texto */
-  liquid(tl,t0,dur=0.9){tl.fromTo('#liquid-map',{attr:{scale:90}},{attr:{scale:0},duration:dur,ease:'expo.out'},t0);}
 };
 
 /* Enfase na legenda: subida curta (14 px), rapida e suave */

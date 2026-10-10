@@ -7,7 +7,7 @@ Para cada cena pergunte: *o que quem assiste precisa VER para entender esta fras
 
 ```json
 [
-  {"layout":"motion","start":0,"end":2.4,"html":"<div class='kt extrude' style='left:90px;top:760px'>2 HORAS</div>","js":"..."},
+  {"layout":"motion","start":0,"end":2.4,"js":"..."},
   {"layout":"split","start":2.4,"end":6.8,"html":"<div class='glass' style='inset:0'>...</div>","js":"..."},
   {"layout":"full","start":6.8,"end":10.2}
 ]
@@ -69,16 +69,11 @@ E.wordScene(tl, el, [
 ], T);
 ```
 
-## 5. Técnicas extras para cenas `motion`
-
-- **Tipografia cinética:** `E.chars(el)` quebra em letras; anime `y:120, rotateX:-90, opacity:0 → 0` com `stagger:0.03, ease:'expo.out'`.
-  Mude escala e posição a cada palavra dita.
-- **Liquid typography:** classe `liquid` no texto + `E.liquid(tl, t0)` — a distorção assenta em 0,9 s com `expo.out`.
-- **Glitch / texto digital:** `<div class="glitch kt"><span class="g1">TEXTO</span><span class="g2">TEXTO</span></div>`
-  + `E.glitch(tl, el.querySelector('.glitch'), t0)`. Use em palavras como "erro", "corte", "gagueira". Curto: ≤ 0,4 s.
-- **Texto 3D / extrudado:** classe `extrude`; entre com `rotateY:-35 → 0` e `scale:.8 → 1`, `expo.out`, com `transformPerspective:1200`.
-- **Elementos:** barras (`.bar > b` com `scaleX`), contadores (objeto `{v:0}` animado e `onUpdate` escrevendo o número),
-  linhas desenhadas (SVG `strokeDashoffset`), cards de vidro entrando em `stagger`.
+## 5. Tipografia cinética: como deixar profissional
+- Varie **tamanho, posição e peso** a cada palavra; nunca todas no mesmo lugar.
+- Palavra de impacto: maior, laranja Scholar Italic, entra um pouco mais lenta.
+- Ritmo acompanha a fala: a palavra entra no instante em que é dita.
+- Proibido nesta skill: texto 3D/extrudado, liquid, glitch, distorções e efeitos de "IA".
 
 ## 6. Cenas `split` (painel de vidro + apresentador)
 
