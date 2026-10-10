@@ -41,6 +41,10 @@ def baixar():
 
 def copiar_kit():
     """Atualiza as ferramentas da pasta Editai sem tocar nos videos, projetos e perfil do aluno."""
+    # Versoes antigas usavam "meus-videos": renomeia mantendo os videos do aluno
+    antiga, nova = EDITAI / "meus-videos", EDITAI / "videos-sem-edicao"
+    if antiga.exists() and not nova.exists():
+        antiga.rename(nova)
     for item in (FONTE / "kit").iterdir():
         if item.name in PASTAS_DO_ALUNO:
             (EDITAI / item.name).mkdir(parents=True, exist_ok=True) if item.is_dir() else None
