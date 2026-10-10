@@ -45,7 +45,7 @@ html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--i
 .caption{left:60px;width:960px;z-index:5;text-align:center;color:#fff;
   font:400 __CAP_SIZE__px/1.1 EditaiHelvetica,Helvetica,sans-serif;letter-spacing:-.05em;
   text-shadow:0 2px 10px rgba(0,0,0,.45)}
-.caption .key{color:var(--orange);font-family:EditaiScholar,serif;font-style:italic;font-size:__IMPACT_SIZE__px;letter-spacing:0}
+.caption .key{display:inline-block;color:var(--orange);font-family:EditaiScholar,serif;font-style:italic;font-size:__IMPACT_SIZE__px;letter-spacing:0}
 
 /* Kit de vidro */
 .glass{position:absolute;border-radius:32px;background:var(--glass);border:1px solid var(--glass-line);
@@ -110,6 +110,8 @@ const E={
   liquid(tl,t0,dur=0.9){tl.fromTo('#liquid-map',{attr:{scale:90}},{attr:{scale:0},duration:dur,ease:'expo.out'},t0);}
 };
 
+/* Enfase na legenda: subida curta (14 px), rapida e suave */
+for(const k of __KEY_MOVES__){timeline.fromTo('#'+k.id+' .key',{y:14,opacity:0},{y:0,opacity:1,duration:k.d,ease:'power3.out',immediateRender:false},k.t);}
 __SCENE_SCRIPTS__
 
 timeline.set('#editai',{opacity:1},__DURATION__);

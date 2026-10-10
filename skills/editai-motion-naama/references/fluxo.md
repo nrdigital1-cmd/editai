@@ -1,10 +1,16 @@
 # Fluxo local Editai
 
-## Perfil do criador
-Use `perfil.json` na raiz de trabalho escolhida pelo usuário (não na pasta instalada da skill). No primeiro vídeo, reúna numa única mensagem os campos ausentes: nome, usuario sem @, nicho, seguidores exatamente como informado, pasta_prints e avatar opcional. Reutilize os dados nos próximos projetos. Dados que não serão exibidos podem ficar vazios enquanto o usuário não os informar. Não confunda Nome do criador do curso com nome do aluno.
+## Antes do primeiro vídeo
+
+**Identidade visual.** Pergunte uma vez, numa frase: "Quer manter a identidade visual do Editai (cores e fontes atuais) ou prefere usar as suas?"
+- Manter: siga com `design.json` como está.
+- Mudar: peça as cores (códigos ou um print da paleta) e as fontes (arquivos .otf/.ttf ou o nome de uma fonte gratuita do Google Fonts, que você baixa). Salve as cores em `palette` do `editai.json` do projeto e as fontes em `assets/fonts/` com os mesmos nomes de arquivo usados pela composição.
+Guarde a escolha em `perfil.json` (`"identidade": "editai"` ou `"propria"`, com as cores e fontes) para não perguntar de novo.
+
+**Dados do perfil (opcional).** Nome, @ e seguidores só servem quando uma cena mostra o perfil (por exemplo, um card "segue @fulano" ou um print do Instagram). Não pergunte de início: peça só quando o vídeo for usar, e salve em `perfil.json`.
 
 ```json
-{"nome":"","usuario":"","nicho":"","seguidores":"","pasta_prints":"","avatar":null}
+{"identidade":"editai","nome":"","usuario":"","seguidores":"","pasta_prints":""}
 ```
 
 Não invente seguidores, métricas, resultados, logos, prints ou depoimentos. Visualize cada print antes de usar. Copie somente os arquivos selecionados para o projeto e registre origem e uso em `assets/SOURCES.md`. Uma interface ilustrativa deve ser identificada como demonstração, sem resultados fictícios.

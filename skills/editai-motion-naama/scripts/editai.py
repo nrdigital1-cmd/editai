@@ -175,11 +175,19 @@ def caption_chunks(words, duration, emphasis, fixes, max_words=3, max_chars=18):
         end = min(nxt, float(words[chunk[-1][0]]["end"]) + 0.6)
         if end <= start:
             continue
-        parts = []
+        before, key = [], None
         for i, text in chunk:
-            safe = html.escape(text)
-            parts.append(f'<span class="key">{safe}</span>' if i in marked else safe)
-        out.append((start, end, " ".join(parts)))
+            if i in marked and key is None:
+                key = html.escape(text)
+            elif key is None:
+                before.append(html.escape(text))
+            else:
+                before.append(html.escape(text))  # palavras depois da enfase continuam na linha de cima
+        text = " ".join(before)
+        if key:
+            # Enfase MAIOR na linha de baixo das palavras anteriores
+            text = (text + "<br>" if text else "") + f'<span class="key">{key}</span>'
+        out.append((start, end, text))
     return out
 
 
@@ -214,7 +222,7 @@ def build(a):
         return "full"
 
     lay = cfg["layout"]
-    captions = []
+    captions, key_moves = [], []
     for n, (start, end, text) in enumerate(caption_chunks(transcript["words"], duration, emphasis, fixes)):
         where = layout_at(start)
         if where == "motion":
@@ -224,6 +232,8 @@ def build(a):
         top = lay["caption_top"] if where == "full" else lay["split_caption_top"]
         captions.append(f'<div id="cap-{n}" class="clip caption" data-start="{start:.3f}" '
                         f'data-duration="{end - start:.3f}" data-track-index="4" style="top:{top}px">{text}</div>')
+        if 'class="key"' in text:
+            key_moves.append({"id": f"cap-{n}", "t": start, "d": min(0.3, (end - start) * 0.7)})
 
     panels, scripts, camera = [], [], []
     for n, s in enumerate(scenes):
@@ -248,7 +258,7 @@ def build(a):
             raise ValueError("Cor inválida na paleta.")
     variables = {
         "DURATION": f"{duration:.3f}", "CAPTIONS": "\n".join(captions), "PANELS": "\n".join(panels),
-        "SCENE_SCRIPTS": "\n".join(scripts), "CAMERA": json.dumps(camera),
+        "SCENE_SCRIPTS": "\n".join(scripts), "KEY_MOVES": json.dumps(key_moves), "CAMERA": json.dumps(camera),
         "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]),
         "FACE_Y": str(lay.get("face_y_percent", 30)),
         "ORANGE": pal["orange"], "BROWN": pal["brown"], "INK": pal["ink"], "PAPER": pal["off_white"],

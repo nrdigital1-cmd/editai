@@ -26,3 +26,5 @@ Vídeo vertical 1080×1920 em que **cada animação mostra o que está sendo dit
 - Nunca inventar números, prints ou resultados; números nos painéis vêm da fala ou do usuário.
 - Remover pausas, gagueiras e frases repetidas, mantendo a última versão; ≤ 120 s por padrão.
 - Conferir snapshots de todas as trocas de cena antes de exportar. Entregar caminho do MP4, cortes feitos e pendências.
+- Antes do primeiro vídeo, perguntar se mantém a identidade visual do Editai ou usa cores e fontes próprias (ver fluxo). Nome e @ só quando uma cena for mostrar o perfil.
+- **Ênfase na legenda:** quando a palavra de impacto aparece sobre a pessoa, ela entra MAIOR na linha de baixo da palavra anterior, subindo pouco (≈14 px), rápida e suave.

@@ -140,6 +140,12 @@ def cut(a):
     run(["ffmpeg", "-y", "-v", "error", "-i", media, option, filterfile, "-map", "[v]", "-map", "[a]", *encoder(), "-r", "30", "-c:a", "aac", "-b:a", "192k", assets / "clean.mp4"])
     write(assets / "edit-decisions.json", {"duration": total, "segments": records, "source_sha256": fingerprint(media), "clean_sha256": fingerprint(assets / "clean.mp4")})
 
+def fixes_text(fixes, i, words):
+    for fix in fixes:
+        if fix["index"] == i:
+            return fix["text"].strip()
+    return words[i]["text"].strip()
+
 def build(a):
     project = Path(a.project)
     cfg = read(project / "editai.json")
@@ -168,10 +174,16 @@ def build(a):
         if not text or end <= start:
             continue
         impact = any(x["index"] == i for x in emphasis)
-        cls = "caption impact" if impact else "caption"
-        captions.append(f'<div id="word-{i}" class="clip {cls}" data-start="{start:.3f}" data-duration="{end-start:.3f}" data-track-index="2">{html.escape(text)}</div>')
-        if impact and cfg["style"] == "natural":
-            motions.append({"id": f"word-{i}", "start": start, "duration": min(0.14, (end-start)*0.6), "y": -10, "scale": 1})
+        if impact:
+            # Enfase: a palavra anterior fica em cima e a de impacto entra MAIOR na linha de baixo
+            prev = next((fixes_text(fixes, j, words) for j in range(i - 1, -1, -1) if fixes_text(fixes, j, words)), "")
+            top = f'<span class="prev">{html.escape(prev)}</span><br>' if prev else ""
+            captions.append(f'<div id="word-{i}" class="clip caption" data-start="{start:.3f}" data-duration="{end-start:.3f}" data-track-index="2">'
+                            f'{top}<span id="imp-{i}" class="impact">{html.escape(text)}</span></div>')
+            # Subida curta (14 px) e rapida, assentando suave
+            motions.append({"id": f"imp-{i}", "start": start, "duration": min(0.3, (end - start) * 0.7), "y": 14, "scale": 1})
+        else:
+            captions.append(f'<div id="word-{i}" class="clip caption" data-start="{start:.3f}" data-duration="{end-start:.3f}" data-track-index="2">{html.escape(text)}</div>')
     beats = read(project / "assets" / "beats.json") if (project / "assets" / "beats.json").exists() else []
     overlays = []
     for i, beat in enumerate(beats):
