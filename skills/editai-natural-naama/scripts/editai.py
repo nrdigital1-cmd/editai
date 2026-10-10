@@ -194,7 +194,7 @@ def build(a):
         raise ValueError("Execute npm install na pasta do projeto para instalar GSAP e Hyperframes.")
     shutil.copy(gsap, project / "assets" / "gsap.min.js")
     text = (project / "src" / "composition.html").read_text(encoding="utf-8")
-    variables = {"DURATION": str(duration), "CAPTIONS": "\n".join(captions), "OVERLAYS": "\n".join(overlays), "MOTIONS": json.dumps(motions), "STYLE": cfg["style"], "CAP_TOP": str(layout["caption_top"]), "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]), "SHADOW": "0 2px 8px rgba(0,0,0,.35)" if cfg["light_background"] else "none", "GLOW": "0 0 12px rgba(138,43,226,.18)" if cfg["style"] == "anuncios" else "none"}
+    variables = {"DURATION": str(duration), "CAPTIONS": "\n".join(captions), "OVERLAYS": "\n".join(overlays), "MOTIONS": json.dumps(motions), "STYLE": cfg["style"], "CAP_TOP": str(layout["caption_top"]), "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]), "SHADOW": "0 2px 8px rgba(0,0,0,.35)" if cfg["light_background"] else "none"}
     for key, value in variables.items():
         text = text.replace("__" + key + "__", value)
     for key, value in cfg["palette"].items():

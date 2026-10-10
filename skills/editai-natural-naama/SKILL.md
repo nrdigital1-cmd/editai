@@ -10,7 +10,7 @@ Crie um vídeo vertical final em MP4 com até 120 segundos por padrão, mantendo
 Antes de executar, leia [fluxo local](references/fluxo.md) para perfil, dependências, cortes, transcrição, composição e validação, e [identidade visual](references/identidade.md) para tipografia, paleta e motion. Use o preset **natural** em `init --style natural`.
 
 ## Escolha visual
-Use prints e imagens reais acima da cabeça com bordas arredondadas e motion discreto. Legenda branca sem contorno. Palavras de impacto também brancas, em Scholar Italic, um pouco maiores, entrando de cima para baixo com movimento curto, suave e rápido. O estilo deve continuar natural, sem diagramas densos nem glow constante.
+Use prints e imagens reais acima da cabeça com bordas arredondadas e motion discreto. Legenda branca sem contorno. Palavras de impacto também brancas, em Scholar Italic, um pouco maiores, entrando de cima para baixo com movimento curto, suave e rápido. O estilo deve continuar natural, sem diagramas densos e sem glow.
 
 ## Critérios de entrega
 - Perfil salvo uma vez em `perfil.json`; nunca inventar números, logos, prints ou resultados.
@@ -19,3 +19,6 @@ Use prints e imagens reais acima da cabeça com bordas arredondadas e motion dis
 - Helvetica regular com tracking −0,05 em; Scholar Italic nos destaques. Legendas um pouco abaixo do queixo, elementos acima da cabeça, rosto livre.
 - Conferir snapshots de todas as trocas antes de exportar o MP4 com Hyperframes. Avisar antes das etapas demoradas; não repetir processamento sem necessidade.
 - Entregar caminho, cortes feitos, fontes e pendências. Publicação não faz parte da edição.
+
+## Regra das animações
+Cada animação precisa ter um motivo: mostrar o que a pessoa está falando naquele momento e ajudar quem assiste a entender. Se for só enfeite, não entra. Na dúvida, menos. Sem glow, sem brilho, sem neon. Roxo e limão só em detalhes pequenos, como uma palavra destacada.
