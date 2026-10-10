@@ -191,6 +191,32 @@ def caption_chunks(words, duration, emphasis, fixes, max_words=3, max_chars=18):
     return out
 
 
+def modo_leve(cfg):
+    """PC fraco (poucos nucleos ou pouca memoria) exporta com menos blur. editai.json pode forcar: "modo_leve": true/false."""
+    escolha = cfg.get("modo_leve", "auto")
+    if isinstance(escolha, bool):
+        return escolha
+    nucleos = os.cpu_count() or 2
+    memoria_gb = 8.0
+    try:
+        if sys.platform == "win32":
+            import ctypes
+            class M(ctypes.Structure):
+                _fields_ = [("l", ctypes.c_ulong), ("c", ctypes.c_ulong), ("total", ctypes.c_ulonglong)] + [(f"x{k}", ctypes.c_ulonglong) for k in range(6)]
+            m = M(); m.l = ctypes.sizeof(M)
+            ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
+            memoria_gb = m.total / 2**30
+        elif sys.platform == "darwin":
+            memoria_gb = int(subprocess.run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True).stdout) / 2**30
+        else:
+            memoria_gb = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / 2**30
+    except Exception:
+        pass
+    leve = nucleos <= 4 or memoria_gb < 8
+    if leve:
+        print("Modo leve: PC mais simples detectado, usando menos desfoque de movimento para exportar mais rápido.", flush=True)
+    return leve
+
 def build(a):
     project = Path(a.project)
     cfg = read(project / "editai.json")
@@ -239,10 +265,10 @@ def build(a):
     for n, s in enumerate(scenes):
         start, end = float(s["start"]), float(s["end"])
         camera.append({"t": start, "layout": s["layout"]})
-        if s.get("html"):
+        if s.get("html") or s.get("js"):
             # HTML escrito localmente pelo agente para esta cena; nunca markup remoto
             panels.append(f'<div id="scene-{n}" class="clip scene {s["layout"]}" data-start="{start:.3f}" '
-                          f'data-duration="{end - start:.3f}" data-track-index="3">{s["html"]}</div>')
+                          f'data-duration="{end - start:.3f}" data-track-index="3">{s.get("html", "")}</div>')
         if s.get("js"):
             # Keyframes da cena: recebe a timeline (tl), o inicio (t0) e o elemento da cena (el)
             scripts.append(f"(function(tl,t0,el){{{s['js']}}})(timeline,{start},document.getElementById('scene-{n}'));")
@@ -258,7 +284,7 @@ def build(a):
             raise ValueError("Cor inválida na paleta.")
     variables = {
         "DURATION": f"{duration:.3f}", "CAPTIONS": "\n".join(captions), "PANELS": "\n".join(panels),
-        "SCENE_SCRIPTS": "\n".join(scripts), "KEY_MOVES": json.dumps(key_moves), "CAMERA": json.dumps(camera),
+        "SCENE_SCRIPTS": "\n".join(scripts), "KEY_MOVES": json.dumps(key_moves), "BLUR": "0.5" if modo_leve(cfg) else "1", "CAMERA": json.dumps(camera),
         "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]),
         "FACE_Y": str(lay.get("face_y_percent", 30)),
         "ORANGE": pal["orange"], "BROWN": pal["brown"], "INK": pal["ink"], "PAPER": pal["off_white"],

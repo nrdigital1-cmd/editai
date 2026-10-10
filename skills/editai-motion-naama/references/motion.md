@@ -38,7 +38,38 @@ Para cada cena pergunte: *o que quem assiste precisa VER para entender esta fras
 | **Mask reveal** | Revelar por dentro de uma máscara | `clipPath: inset(0 100% 0 0) → inset(0 0 0 0)` |
 | **Parallax** | Camadas em velocidades diferentes | Fundo/grade 20 px, painel 40 px, texto 60 px no mesmo intervalo |
 
-## 3. Técnicas para cenas `motion`
+## 3. Ajudantes prontos (use sempre — já têm curva, blur e deriva)
+- `E.enter(tl, alvo, t, {y, x, scale, d, blur, stagger})` — entrada com desaceleração e motion blur.
+- `E.exit(tl, alvo, t, {...})` — saída acelerando com blur, terminando no tempo `t`.
+- `E.drift(tl, alvo, t, duração)` — movimento lento contínuo enquanto o elemento está na tela.
+- `E.wordScene(tl, el, palavras, fim)` — **a palavra vira a cena** (abaixo).
+Todo elemento de painel segue: `E.enter` → `E.drift` → `E.exit`. Nada entra seco, nada fica congelado.
+
+### Regras de movimento
+- **Entrada:** chega rápido e desacelera ao assentar (`expo.out` / `power3.out`), 0,45–0,7 s. Nunca linear.
+- **Motion blur:** todo movimento de entrada e saída leva desfoque proporcional à velocidade (≈10 px em elementos,
+  ≈4 px na legenda), que some quando o elemento para. Nada fica desfocado parado.
+- **Deriva contínua:** depois de entrar, o elemento continua se movendo devagar (`sine.inOut`, 6–10 px ou escala +1,5%). Nada congela.
+- **Saída:** acelera ao sair (`power2.in`), 0,25–0,3 s, com blur; encadeada com a entrada seguinte.
+- **Stagger** em grupos (0,06–0,12 s), **anticipation** antes de números estourarem, **follow-through** leve ao parar.
+- **Modo leve:** em PC mais simples o builder reduz o blur pela metade sozinho (`"modo_leve"` no `editai.json` força ligado/desligado).
+
+## 4. Cenas só de texto: a palavra vira a cena
+Em toda cena `motion` sem elementos, use `E.wordScene`. Cada palavra (ou bloco curto) ocupa a tela no instante
+em que é dita e se transforma na próxima: entra subindo com blur, cresce devagar enquanto é falada e sai acelerando
+para cima. Palavra de impacto (`key:true`) entra **maior, em laranja Scholar Italic** e um pouco mais lenta.
+Varie tamanho e posição entre palavras para dar ritmo (não deixe todas no mesmo lugar).
+
+```js
+E.wordScene(tl, el, [
+  {t:0.00, text:"se você", size:120, y:700},
+  {t:0.92, text:"passa", size:150, y:820},
+  {t:1.34, text:"HORAS", key:true, size:230, y:760},
+  {t:1.78, text:"editando", size:140, y:900}
+], T);
+```
+
+## 5. Técnicas extras para cenas `motion`
 
 - **Tipografia cinética:** `E.chars(el)` quebra em letras; anime `y:120, rotateX:-90, opacity:0 → 0` com `stagger:0.03, ease:'expo.out'`.
   Mude escala e posição a cada palavra dita.
@@ -49,7 +80,7 @@ Para cada cena pergunte: *o que quem assiste precisa VER para entender esta fras
 - **Elementos:** barras (`.bar > b` com `scaleX`), contadores (objeto `{v:0}` animado e `onUpdate` escrevendo o número),
   linhas desenhadas (SVG `strokeDashoffset`), cards de vidro entrando em `stagger`.
 
-## 4. Cenas `split` (painel de vidro + apresentador)
+## 6. Cenas `split` (painel de vidro + apresentador)
 
 Exemplos que ilustram falas comuns:
 - "tirou as pausas / cortou os erros" → forma de onda com trechos marcados que encolhem e somem.
@@ -57,7 +88,7 @@ Exemplos que ilustram falas comuns:
 - "eu só gravo e mando" → fluxo: card "vídeo bruto" → seta desenhada → card "Claude" → card "pronto ✓".
 - "legenda, prints, animações" → três chips de vidro entrando em stagger, cada um na palavra dita.
 
-## 5. Conferir
+## 7. Conferir
 
 Snapshots em todas as trocas de cena e no meio de cada animação (`npx hyperframes snapshot --at ...`).
 Confira: legenda legível, rosto livre, texto dentro da área segura, vidro visível sobre o fundo, nenhum glow.

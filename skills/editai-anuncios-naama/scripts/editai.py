@@ -146,6 +146,32 @@ def fixes_text(fixes, i, words):
             return fix["text"].strip()
     return words[i]["text"].strip()
 
+def modo_leve(cfg):
+    """PC fraco (poucos nucleos ou pouca memoria) exporta com menos blur. editai.json pode forcar: "modo_leve": true/false."""
+    escolha = cfg.get("modo_leve", "auto")
+    if isinstance(escolha, bool):
+        return escolha
+    nucleos = os.cpu_count() or 2
+    memoria_gb = 8.0
+    try:
+        if sys.platform == "win32":
+            import ctypes
+            class M(ctypes.Structure):
+                _fields_ = [("l", ctypes.c_ulong), ("c", ctypes.c_ulong), ("total", ctypes.c_ulonglong)] + [(f"x{k}", ctypes.c_ulonglong) for k in range(6)]
+            m = M(); m.l = ctypes.sizeof(M)
+            ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
+            memoria_gb = m.total / 2**30
+        elif sys.platform == "darwin":
+            memoria_gb = int(subprocess.run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True).stdout) / 2**30
+        else:
+            memoria_gb = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / 2**30
+    except Exception:
+        pass
+    leve = nucleos <= 4 or memoria_gb < 8
+    if leve:
+        print("Modo leve: PC mais simples detectado, usando menos desfoque de movimento para exportar mais rápido.", flush=True)
+    return leve
+
 def build(a):
     project = Path(a.project)
     cfg = read(project / "editai.json")
@@ -181,7 +207,7 @@ def build(a):
             captions.append(f'<div id="word-{i}" class="clip caption" data-start="{start:.3f}" data-duration="{end-start:.3f}" data-track-index="2">'
                             f'{top}<span id="imp-{i}" class="impact">{html.escape(text)}</span></div>')
             # Subida curta (14 px) e rapida, assentando suave
-            motions.append({"id": f"imp-{i}", "start": start, "duration": min(0.3, (end - start) * 0.7), "y": 14, "scale": 1})
+            motions.append({"id": f"imp-{i}", "start": start, "duration": min(0.32, (end - start) * 0.7), "y": 14, "scale": 1, "blur": 4})
         else:
             captions.append(f'<div id="word-{i}" class="clip caption" data-start="{start:.3f}" data-duration="{end-start:.3f}" data-track-index="2">{html.escape(text)}</div>')
     beats = read(project / "assets" / "beats.json") if (project / "assets" / "beats.json").exists() else []
@@ -203,13 +229,14 @@ def build(a):
         else:
             raise ValueError("Natural aceita prints/imagens; anúncios aceita imagens e HTML local.")
         overlays.append(f'<div id="beat-{i}" class="clip overlay" data-start="{start}" data-duration="{end-start}" data-track-index="3" style="left:{x}px;top:{y}px;width:{w}px;height:{h}px">{content}</div>')
-        motions.append({"id": f"beat-{i}", "start": start, "duration": min(0.28 if cfg["style"] == "anuncios" else 0.18, (end-start)*0.5), "y": 14 if cfg["style"] == "anuncios" else -8, "scale": 0.98})
+        # Entrada longa com desaceleracao, deriva sutil enquanto fica na tela e saida com aceleracao + blur
+        motions.append({"id": f"beat-{i}", "start": start, "end": end, "duration": min(0.6, (end - start) * 0.35), "y": 28, "scale": 0.96, "blur": 10, "drift": True})
     gsap = project / "node_modules" / "gsap" / "dist" / "gsap.min.js"
     if not gsap.exists():
         raise ValueError("Execute npm install na pasta do projeto para instalar GSAP e Hyperframes.")
     shutil.copy(gsap, project / "assets" / "gsap.min.js")
     text = (project / "src" / "composition.html").read_text(encoding="utf-8")
-    variables = {"DURATION": str(duration), "CAPTIONS": "\n".join(captions), "OVERLAYS": "\n".join(overlays), "MOTIONS": json.dumps(motions), "STYLE": cfg["style"], "CAP_TOP": str(layout["caption_top"]), "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]), "SHADOW": "0 2px 8px rgba(0,0,0,.35)" if cfg["light_background"] else "none"}
+    variables = {"DURATION": str(duration), "CAPTIONS": "\n".join(captions), "OVERLAYS": "\n".join(overlays), "MOTIONS": json.dumps(motions), "BLUR": "0.5" if modo_leve(cfg) else "1", "STYLE": cfg["style"], "CAP_TOP": str(layout["caption_top"]), "CAP_SIZE": str(cfg["caption_size"]), "IMPACT_SIZE": str(cfg["impact_size"]), "SHADOW": "0 2px 8px rgba(0,0,0,.35)" if cfg["light_background"] else "none"}
     for key, value in variables.items():
         text = text.replace("__" + key + "__", value)
     for key, value in cfg["palette"].items():

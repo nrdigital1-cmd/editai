@@ -27,7 +27,20 @@ __OVERLAYS__
 <script>
 const timeline=gsap.timeline({paused:true});
 const motions=__MOTIONS__;
-for(const m of motions){timeline.fromTo('#'+m.id,{y:m.y,scale:m.scale,opacity:0},{y:0,scale:1,opacity:1,duration:m.duration,ease:'power2.out',immediateRender:false},m.start);}
+const BLUR=__BLUR__; /* 1 normal, 0.5 no modo leve */
+for(const m of motions){
+  const b=(m.blur||0)*BLUR;
+  /* entrada: chega rapido e desacelera (expo.out); o desfoque some junto com a velocidade */
+  timeline.fromTo('#'+m.id,{y:m.y,scale:m.scale,opacity:0,filter:'blur('+b+'px)'},
+    {y:0,scale:1,opacity:1,filter:'blur(0px)',duration:m.duration,ease:'expo.out',immediateRender:false},m.start);
+  if(m.drift&&m.end){
+    const hold=m.end-m.start-m.duration-0.3;
+    /* deriva sutil: nada fica congelado na tela */
+    if(hold>0.2)timeline.to('#'+m.id,{y:-8,duration:hold,ease:'sine.inOut'},m.start+m.duration);
+    /* saida: acelera (power2.in) e desfoca ao sair */
+    timeline.to('#'+m.id,{opacity:0,y:-22,filter:'blur('+b+'px)',duration:0.3,ease:'power2.in'},m.end-0.3);
+  }
+}
 timeline.set('#editai',{opacity:1},__DURATION__);
 window.__timelines=window.__timelines||{};
 window.__timelines.editai=timeline;

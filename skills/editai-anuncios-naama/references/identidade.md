@@ -16,3 +16,12 @@ Todos os tamanhos são pontos de partida para a escala 1080×1920. Confira os ex
 
 ## Regra das animações
 Cada animação precisa ter um motivo: mostrar o que a pessoa está falando naquele momento e ajudar quem assiste a entender. Se for só enfeite, não entra. Na dúvida, menos. Sem glow, sem brilho, sem neon. Roxo e limão só em detalhes pequenos, como uma palavra destacada.
+
+## Motion profissional (vale para todo elemento e texto)
+- **Entrada:** chega rápido e desacelera ao assentar (`expo.out` / `power3.out`), 0,45–0,7 s. Nunca linear.
+- **Motion blur:** todo movimento de entrada e saída leva desfoque proporcional à velocidade (≈10 px em elementos,
+  ≈4 px na legenda), que some quando o elemento para. Nada fica desfocado parado.
+- **Deriva contínua:** depois de entrar, o elemento continua se movendo devagar (`sine.inOut`, 6–10 px ou escala +1,5%). Nada congela.
+- **Saída:** acelera ao sair (`power2.in`), 0,25–0,3 s, com blur; encadeada com a entrada seguinte.
+- **Stagger** em grupos (0,06–0,12 s), **anticipation** antes de números estourarem, **follow-through** leve ao parar.
+- **Modo leve:** em PC mais simples o builder reduz o blur pela metade sozinho (`"modo_leve"` no `editai.json` força ligado/desligado).

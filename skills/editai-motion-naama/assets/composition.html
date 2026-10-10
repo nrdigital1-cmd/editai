@@ -98,8 +98,35 @@ for(const c of __CAMERA__){
   timeline.set('#frame',{opacity:c.layout==='split'?1:0},c.t);
 }
 
+const BLUR=__BLUR__; /* 1 normal, 0.5 no modo leve */
 /* Ajudantes de motion para as cenas */
 const E={
+  /* ENTRADA padrao: desacelera ao chegar (expo.out) com blur de movimento proporcional a distancia */
+  enter(tl,target,t,o={}){const d=o.d||0.6,b=(o.blur??10)*BLUR;
+    tl.fromTo(target,{opacity:0,x:o.x||0,y:o.y??28,scale:o.scale??0.96,filter:'blur('+b+'px)'},
+      {opacity:1,x:0,y:0,scale:1,filter:'blur(0px)',duration:d,ease:o.ease||'expo.out',stagger:o.stagger||0,immediateRender:false},t);},
+  /* SAIDA padrao: acelera ao sair (power2.in) e desfoca */
+  exit(tl,target,t,o={}){const d=o.d||0.3,b=(o.blur??10)*BLUR;
+    tl.to(target,{opacity:0,x:o.x||0,y:o.y??-22,scale:o.scale??1.02,filter:'blur('+b+'px)',duration:d,ease:'power2.in',stagger:o.stagger||0},t-d);},
+  /* DERIVA continua: movimento lento e suave enquanto o elemento esta na tela */
+  drift(tl,target,t,dur,o={}){tl.to(target,{y:o.y??-10,x:o.x||0,scale:o.scale??1.015,duration:dur,ease:'sine.inOut'},t);},
+  /* A PALAVRA VIRA A CENA: cada palavra (ou bloco) ocupa a tela no tempo em que e dita
+     e se transforma na proxima. words = [{t, text, key, size, x, y}] em coordenadas da tela */
+  wordScene(tl,el,words,end){
+    words.forEach((w,k)=>{
+      const n=document.createElement('div');n.className='kt'+(w.key?' serif orange':'');
+      n.textContent=w.text;n.style.left=(w.x??0)+'px';n.style.top=(w.y??820)+'px';
+      n.style.fontSize=(w.size||(w.key?190:150))+'px';n.style.opacity=0;if(w.key)n.style.color='var(--orange)';if(w.x==null){n.style.width='1080px';n.style.textAlign='center';}
+      el.appendChild(n);
+      const out=(k+1<words.length?words[k+1].t:end);
+      /* entra subindo com blur e leve overshoot de escala; palavra de impacto entra maior e mais lenta */
+      tl.fromTo(n,{opacity:0,y:60,scale:w.key?0.82:0.9,filter:'blur('+14*BLUR+'px)'},
+        {opacity:1,y:0,scale:1,filter:'blur(0px)',duration:w.key?0.55:0.42,ease:'expo.out',immediateRender:false},w.t);
+      /* enquanto e dita: cresce devagar (nada parado) */
+      tl.to(n,{scale:1.06,duration:Math.max(0.2,out-w.t-0.25),ease:'sine.out'},w.t+0.3);
+      /* sai acelerando para cima, abrindo espaco para a proxima */
+      tl.to(n,{opacity:0,y:-70,scale:1.12,filter:'blur('+12*BLUR+'px)',duration:0.24,ease:'power2.in'},out-0.2);
+    });},
   /* quebra o texto em letras para animar uma a uma (stagger) */
   chars(el){const t=el.textContent;el.textContent='';return [...t].map(ch=>{const s=document.createElement('span');
     s.className='ch';s.textContent=ch===' '?' ':ch;el.appendChild(s);return s;});},
@@ -111,7 +138,7 @@ const E={
 };
 
 /* Enfase na legenda: subida curta (14 px), rapida e suave */
-for(const k of __KEY_MOVES__){timeline.fromTo('#'+k.id+' .key',{y:14,opacity:0},{y:0,opacity:1,duration:k.d,ease:'power3.out',immediateRender:false},k.t);}
+for(const k of __KEY_MOVES__){timeline.fromTo('#'+k.id+' .key',{y:14,opacity:0,filter:'blur('+4*BLUR+'px)'},{y:0,opacity:1,filter:'blur(0px)',duration:k.d,ease:'power3.out',immediateRender:false},k.t);}
 __SCENE_SCRIPTS__
 
 timeline.set('#editai',{opacity:1},__DURATION__);

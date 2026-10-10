@@ -22,7 +22,8 @@ Vídeo vertical 1080×1920 em que **cada animação mostra o que está sendo dit
 - **Cada animação tem um motivo:** ilustrar a frase daquele momento para quem assiste entender. Enfeite não entra.
 - **Legenda:** 2–3 palavras por vez no peito, Helvetica branca; palavra-chave em laranja Scholar Italic (`emphasis.json`, ~1 por frase). Sem legenda nas cenas `motion` (o texto animado é a fala) nem no `split` (o queixo cai sob a interface do Reels; o painel explica a fala).
 - **Visual:** fundo sempre em gradiente com grade fina. Formas de preferência em **vidro** (`.glass`), senão gradiente. Paleta: laranja `#FF6D29`, marrom `#453027`, preto `#161316`, off-white `#F5F2EB`. Sem glow, sem neon, sem brilho.
-- **Movimento fluido:** entradas com ease-out, saídas com ease-in, nada linear; detalhes no guia de motion.
+- **Motion profissional:** entradas que desaceleram, motion blur na entrada e na saída, deriva contínua, saídas encadeadas. Use os ajudantes `E.enter`, `E.drift`, `E.exit`.
+- **A palavra vira a cena:** cenas só de texto usam `E.wordScene` — cada palavra dita ocupa a tela e se transforma na próxima; impacto em laranja Scholar Italic, maior.
 - Nunca inventar números, prints ou resultados; números nos painéis vêm da fala ou do usuário.
 - Remover pausas, gagueiras e frases repetidas, mantendo a última versão; ≤ 120 s por padrão.
 - Conferir snapshots de todas as trocas de cena antes de exportar. Entregar caminho do MP4, cortes feitos e pendências.

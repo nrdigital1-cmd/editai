@@ -23,3 +23,4 @@ Ilustre mecanismos e benefícios com formas, SVG, ícones, imagens e comparaçõ
 ## Regra das animações
 Cada animação precisa ter um motivo: mostrar o que a pessoa está falando naquele momento e ajudar quem assiste a entender. Se for só enfeite, não entra. Na dúvida, menos. Sem glow, sem brilho, sem neon. Roxo e limão só em detalhes pequenos, como uma palavra destacada.
 - **Ênfase na legenda:** quando a palavra de impacto aparece sobre a pessoa, ela entra MAIOR na linha de baixo da palavra anterior, subindo pouco (≈14 px), rápida e suave.
+- **Motion profissional:** entradas que desaceleram, motion blur na entrada e na saída, deriva contínua e saídas encadeadas (ver identidade visual).
