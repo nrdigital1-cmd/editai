@@ -11,6 +11,12 @@ Esta pasta é onde o aluno edita vídeos com as skills do Editai.
   Depois use a skill `editai-natural-naama`, `editai-anuncios-naama` ou `editai-motion-naama`.
 - Fale com o aluno em português simples, sem termos técnicos.
 
+## Voltar e alterar um vídeo já feito
+- Quando o aluno pedir mudança em um vídeo antigo ("no vídeo X, troca Y"), liste as pastas em `projetos/` e confirme qual é, numa frase, se houver dúvida.
+- Reaproveite tudo o que está no projeto (cortes, transcrição, legenda, cenas). **Não transcreva de novo** se o corte não mudou.
+- Mude só o que foi pedido, rode o build, abra o preview para o aluno aprovar e só exporte quando ele pedir.
+- Salve o vídeo novo com outro nome (ex.: `final-v2.mp4`) para não apagar o anterior.
+
 ## Atualizações
 - Quando o aluno disser "atualiza o Editai": rode `python ferramentas/atualizar.py` e conte as novidades em português simples.
   Depois peça para fechar e abrir o Claude, para as skills novas valerem.

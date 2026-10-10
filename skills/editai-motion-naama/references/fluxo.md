@@ -23,7 +23,7 @@ python "$SKILL/scripts/editai.py" doctor
 python "$SKILL/scripts/editai.py" init "C:/videos/bruto.mp4" "$PROJETO" --style motion
 ```
 
-O scaffold recorta para 1080×1920, 30 fps; confira o enquadramento e adapte o filtro antes de processar se o corte central excluir a pessoa. Não execute de novo em uma pasta existente.
+Se o projeto já existe (o aluno voltou para alterar um vídeo), não rode `init`: reaproveite `keeps.json`, `transcript.json`, legendas e cenas, mude só o pedido e rode `build`. Transcreva de novo apenas se o corte mudar. O scaffold recorta para 1080×1920, 30 fps; confira o enquadramento e adapte o filtro antes de processar se o corte central excluir a pessoa. Não execute de novo em uma pasta existente.
 
 Requisitos: Python 3.10+, FFmpeg/ffprobe, Node compatível com a versão instalada do Hyperframes, faster-whisper. A instalação inicial de dependências e dos modelos precisa de internet; depois a transcrição é local e não envia áudio para serviços externos. `transcribe` usa `local_files_only=True` e falha se o modelo não estiver disponível.
 
