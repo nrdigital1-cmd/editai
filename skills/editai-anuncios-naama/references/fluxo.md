@@ -83,3 +83,6 @@ Depois de acertar os frames: `npx hyperframes render --output renders/editai-fin
 Avise em português antes de transcrever, codificar ou renderizar. Use small para triagem e medium uma vez por versão do corte final; não transcreva novamente após mudar só cor ou posição. Faça snapshots antes do MP4. Use encoder por hardware quando o teste real confirmar suporte, senão CPU. Evite blur pesado, partículas e muitas camadas. Se recortar de novo, transcreva novamente e refaça os tempos dos beats; o builder rejeita uma transcrição cujo hash não corresponda ao vídeo.
 
 Referências técnicas: [CLI oficial](https://github.com/heygen-com/hyperframes/blob/main/docs/developers/cli.mdx) e [schema HTML](https://github.com/heygen-com/hyperframes/blob/main/docs/reference/html-schema.mdx).
+
+## Aprovação antes de exportar (obrigatório)
+Depois do build e da conferência por snapshots, abra a prévia para o aluno com `npx hyperframes preview` na pasta do projeto e diga em uma frase: "Abri a prévia. Assiste e me diz o que mudar, ou escreve 'pode exportar'." **Nunca exporte o MP4 sem o aluno pedir.** Junte os ajustes pedidos numa rodada só. Ao exportar, salve como `renders/final.mp4` (ou `final-v2.mp4`, `final-v3.mp4`... nas alterações, sem apagar o anterior).

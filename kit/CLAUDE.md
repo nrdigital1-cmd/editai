@@ -9,6 +9,7 @@ Esta pasta é onde o aluno edita vídeos com as skills do Editai.
 - Quando o aluno disser "edita meu vídeo" sem escolher o estilo, pergunte numa frase qual ele quer:
   **natural** (dia a dia, prints reais), **anúncio** (venda, oferta) ou **motion** (animações que explicam, tipografia animada).
   Depois use a skill `editai-natural-naama`, `editai-anuncios-naama` ou `editai-motion-naama`.
+- Antes de exportar qualquer vídeo, abra a prévia (`npx hyperframes preview`) e espere o aluno aprovar ou escrever "pode exportar".
 - Fale com o aluno em português simples, sem termos técnicos.
 
 ## Voltar e alterar um vídeo já feito
