@@ -4,7 +4,7 @@
 set -e
 
 PACOTE="$(cd "$(dirname "$0")" && pwd)"
-EDITAI="$HOME/Editai"
+EDITAI="$HOME/Documents/Editai"
 VENV="$EDITAI/.python"
 REPOSITORIO="https://github.com/nrdigital1-cmd/editai.git"
 TOTAL=5
@@ -33,7 +33,7 @@ for par in "git:git" "node:node" "ffmpeg:ffmpeg" "python3:python@3.12"; do
 done
 
 # 2. Editai: baixa do GitHub e monta a pasta de trabalho
-etapa 2 "Baixando o Editai e criando a pasta Editai na sua pasta de usuario"
+etapa 2 "Baixando o Editai e criando a pasta Editai em Documentos"
 mkdir -p "$EDITAI"
 FONTE="$EDITAI/.fonte"
 if [ ! -d "$FONTE/.git" ]; then

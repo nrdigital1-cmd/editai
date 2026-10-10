@@ -3,7 +3,8 @@
 
 $ErrorActionPreference = "Stop"
 $Pacote  = $PSScriptRoot
-$Editai  = Join-Path $env:USERPROFILE "Editai"
+# Pasta Documentos de verdade do aluno (funciona mesmo se ela tiver sido movida)
+$Editai  = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "Editai"
 $Venv    = Join-Path $Editai ".python"
 $Repositorio = "https://github.com/nrdigital1-cmd/editai.git"
 $Total   = 5
@@ -40,7 +41,7 @@ foreach ($p in $programas) {
 }
 
 # 2. Editai: baixa do GitHub e monta a pasta de trabalho ------------------------
-Etapa 2 "Baixando o Editai e criando a pasta Editai na sua pasta de usuario"
+Etapa 2 "Baixando o Editai e criando a pasta Editai em Documentos"
 New-Item -ItemType Directory -Force $Editai | Out-Null
 $Fonte = Join-Path $Editai ".fonte"
 if (-not (Test-Path (Join-Path $Fonte ".git"))) {

@@ -12,7 +12,17 @@ import sys
 from pathlib import Path
 
 REPOSITORIO = "https://github.com/nrdigital1-cmd/editai.git"
-EDITAI = Path.home() / "Editai"
+def documentos():
+    """Pasta Documentos de verdade (no Windows ela pode ter sido movida para outro disco)."""
+    if sys.platform == "win32":
+        import ctypes
+        buf = ctypes.create_unicode_buffer(260)
+        if ctypes.windll.shell32.SHGetFolderPathW(None, 5, None, 0, buf) == 0:  # 5 = Documentos
+            return Path(buf.value)
+    return Path.home() / "Documents"
+
+
+EDITAI = documentos() / "Editai"
 FONTE = EDITAI / ".fonte"          # copia do GitHub, o aluno nao mexe aqui
 SKILLS = Path.home() / ".claude" / "skills"
 PASTAS_DO_ALUNO = {"videos-sem-edicao", "projetos", "perfil.json", ".python", "node_modules", ".fonte"}
