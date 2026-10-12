@@ -19,13 +19,20 @@ def checar(nome, condicao, dica):
 checar("Git", shutil.which("git"), "nao encontrado; rode o instalador de novo")
 checar("FFmpeg",shutil.which("ffmpeg"), "nao encontrado; rode o instalador de novo")
 checar("Node", shutil.which("node"), "nao encontrado; rode o instalador de novo")
-checar("Hyperframes", (KIT / "node_modules" / "hyperframes").exists(), "rode 'npm install' na pasta Editai")
+checar("Remotion", (KIT / "node_modules" / "remotion").exists() and (KIT / "node_modules" / "@remotion" / "cli").exists(),
+       "rode 'npm install' na pasta Editai")
 
 try:
     import faster_whisper  # noqa: F401
     checar("Whisper", True, "")
 except ImportError:
     checar("Whisper", False, "transcritor nao instalado")
+
+try:
+    import cv2  # noqa: F401
+    checar("Rastreador de rosto", True, "")
+except ImportError:
+    checar("Rastreador de rosto", False, "OpenCV nao instalado; rode o instalador de novo")
 
 skills = Path.home() / ".claude" / "skills"
 checar("Skills do Editai", any(skills.glob("editai*")), "skills nao encontradas")

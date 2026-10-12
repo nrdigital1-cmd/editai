@@ -49,16 +49,16 @@ python3 "$FONTE/kit/ferramentas/atualizar.py" --sem-baixar \
 ok "pasta pronta em $EDITAI e skills instaladas"
 
 # 3. Ferramenta de montagem
-etapa 3 "Instalando a ferramenta de montagem (Hyperframes) - leva alguns minutos"
-( cd "$EDITAI" && npm install --no-audit --no-fund --loglevel=error && npx hyperframes browser ensure )
+etapa 3 "Instalando a ferramenta de montagem (Remotion) - leva alguns minutos"
+( cd "$EDITAI" && npm install --no-audit --no-fund --loglevel=error && npx remotion browser ensure )
 ok "ferramenta de montagem pronta"
 
 # 4. Transcritor
-etapa 4 "Instalando o transcritor de voz (Whisper)"
+etapa 4 "Instalando o transcritor de voz (Whisper) e o rastreador de rosto"
 [ -x "$VENV/bin/python" ] || python3 -m venv "$VENV"
 "$VENV/bin/python" -m pip install --quiet --upgrade pip
-"$VENV/bin/python" -m pip install --quiet "faster-whisper==1.2.1" "av==15.1.0"
-ok "transcritor instalado"
+"$VENV/bin/python" -m pip install --quiet "faster-whisper==1.2.1" "av==15.1.0" "opencv-python-headless==4.14.0.94"
+ok "transcritor e rastreador de rosto instalados"
 
 # 5. Modelo de voz
 etapa 5 "Baixando o modelo que reconhece a voz (cerca de 2 GB, so na primeira vez)"

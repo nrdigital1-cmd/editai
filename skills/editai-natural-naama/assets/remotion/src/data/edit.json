@@ -1,0 +1,49 @@
+{
+  "style": "motion",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "durationInFrames": 60,
+  "cameraSrc": "media/clean.mp4",
+  "voiceSrc": "media/clean.mp4",
+  "faceYPercent": 30,
+  "palette": {
+    "orange": "#FF6D29",
+    "brown": "#453027",
+    "ink": "#161316",
+    "off_white": "#F5F2EB"
+  },
+  "highlight": {
+    "from": "#FFB37A",
+    "via": "#FF6D29",
+    "to": "#E04A12",
+    "glow": "rgba(255,109,41,0.45)",
+    "glowPx": 18
+  },
+  "captionSize": 58,
+  "impactSize": 116,
+  "trackingEm": -0.05,
+  "lightBackground": false,
+  "blurScale": 1,
+  "captions": [],
+  "scenes": [],
+  "beats": [],
+  "sfx": [],
+  "faceOrigin": {
+    "x": 50,
+    "y": 42
+  },
+  "faceZoom": {
+    "base": 1.02,
+    "breathing": true,
+    "breathingAmp": 0.025,
+    "breathingPeriod": 210
+  },
+  "zooms": [],
+  "faceTrack": null,
+  "faceTracking": {
+    "targetX": 50,
+    "targetY": 42,
+    "maxZoom": 1.35
+  }
+}

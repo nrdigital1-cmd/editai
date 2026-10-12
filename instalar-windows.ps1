@@ -58,21 +58,21 @@ if ($LASTEXITCODE -ne 0) { Falha "Nao consegui montar a pasta Editai. Rode o ins
 Ok "pasta pronta em $Editai e skills instaladas"
 
 # 3. Ferramenta de montagem ----------------------------------------------------
-Etapa 3 "Instalando a ferramenta de montagem (Hyperframes) - leva alguns minutos"
+Etapa 3 "Instalando a ferramenta de montagem (Remotion) - leva alguns minutos"
 Push-Location $Editai
 try {
   npm install --no-audit --no-fund --loglevel=error
-  npx hyperframes browser ensure
+  npx remotion browser ensure
 } finally { Pop-Location }
 Ok "ferramenta de montagem pronta"
 
 # 4. Transcritor ---------------------------------------------------------------
-Etapa 4 "Instalando o transcritor de voz (Whisper)"
+Etapa 4 "Instalando o transcritor de voz (Whisper) e o rastreador de rosto"
 $PyVenv = Join-Path $Venv "Scripts\python.exe"
 if (-not (Test-Path $PyVenv)) { python -m venv $Venv }
 & $PyVenv -m pip install --quiet --upgrade pip
-& $PyVenv -m pip install --quiet "faster-whisper==1.2.1" "av==15.1.0"
-Ok "transcritor instalado"
+& $PyVenv -m pip install --quiet "faster-whisper==1.2.1" "av==15.1.0" "opencv-python-headless==4.14.0.94"
+Ok "transcritor e rastreador de rosto instalados"
 
 # 5. Modelo de voz -------------------------------------------------------------
 Etapa 5 "Baixando o modelo que reconhece a voz (cerca de 2 GB, so na primeira vez)"

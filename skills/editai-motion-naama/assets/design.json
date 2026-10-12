@@ -2,14 +2,14 @@
   "brand": "Editai",
   "creator": "Naamã",
   "max_duration": 120,
-  "caption_size": 62,
-  "impact_size": 74,
+  "caption_size": 58,
+  "impact_size": 116,
   "tracking_em": -0.05,
   "light_background": false,
   "layout": {
     "head_top": 700,
     "chin_y": 1100,
-    "caption_top": 1180,
+    "caption_top": 1110,
     "split_captions": false,
     "split_caption_top": 1640,
     "face_y_percent": 27,
@@ -21,5 +21,28 @@
     "ink": "#161316",
     "off_white": "#F5F2EB"
   },
-  "style": "motion"
+  "style": "motion",
+  "highlight": {
+    "from": "#FFB37A",
+    "via": "#FF6D29",
+    "to": "#E04A12",
+    "glow": "rgba(255,109,41,0.45)",
+    "glow_px": 18
+  },
+  "face_zoom": {
+    "base": 1.02,
+    "breathing": true,
+    "breathing_amp": 0.025,
+    "breathing_period_s": 7,
+    "punch_scale": 1.12,
+    "auto_on_emphasis": true,
+    "min_gap_s": 3.0
+  },
+  "face_track": {
+    "enabled": true,
+    "target_x": 50,
+    "target_y": null,
+    "max_zoom": 1.25,
+    "dead_zone": 0.025
+  }
 }

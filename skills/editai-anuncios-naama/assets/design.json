@@ -3,7 +3,7 @@
   "creator": "Naamã",
   "max_duration": 120,
   "caption_size": 48,
-  "impact_size": 58,
+  "impact_size": 91,
   "tracking_em": -0.05,
   "light_background": false,
   "layout": {
@@ -19,5 +19,28 @@
     "lime": "#BFFF00",
     "off_white": "#F5F2EB"
   },
-  "style": "anuncios"
+  "style": "anuncios",
+  "highlight": {
+    "from": "#EEFFA0",
+    "via": "#BFFF00",
+    "to": "#7FCC00",
+    "glow": "rgba(191,255,0,0.40)",
+    "glow_px": 16
+  },
+  "face_zoom": {
+    "base": 1.02,
+    "breathing": true,
+    "breathing_amp": 0.025,
+    "breathing_period_s": 7,
+    "punch_scale": 1.12,
+    "auto_on_emphasis": true,
+    "min_gap_s": 3.0
+  },
+  "face_track": {
+    "enabled": true,
+    "target_x": 50,
+    "target_y": null,
+    "max_zoom": 1.25,
+    "dead_zone": 0.025
+  }
 }

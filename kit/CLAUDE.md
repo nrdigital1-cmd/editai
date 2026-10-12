@@ -9,7 +9,8 @@ Esta pasta é onde o aluno edita vídeos com as skills do Editai.
 - Quando o aluno disser "edita meu vídeo" sem escolher o estilo, pergunte numa frase qual ele quer:
   **natural** (dia a dia, prints reais), **anúncio** (venda, oferta) ou **motion** (animações que explicam, tipografia animada).
   Depois use a skill `editai-natural-naama`, `editai-anuncios-naama` ou `editai-motion-naama`.
-- Antes de exportar qualquer vídeo, abra a prévia (`npx hyperframes preview`) e espere o aluno aprovar ou escrever "pode exportar".
+- Antes de gerar cada vídeo, pergunte se o aluno mantém a identidade visual do Editai (elementos, cores e fontes) ou se vai enviar as fontes, os elementos e as cores da marca dele.
+- Prévia = **Remotion Studio**: na pasta do projeto rode `npx remotion studio --no-open` em segundo plano e abra o endereço no navegador da conversa. Nunca mostre o MP4 final como prévia. Só exporte (`editai.py render ... --aprovado`) quando o aluno aprovar ou escrever "pode exportar".
 - Fale com o aluno em português simples, sem termos técnicos.
 
 ## Voltar e alterar um vídeo já feito
@@ -17,6 +18,7 @@ Esta pasta é onde o aluno edita vídeos com as skills do Editai.
 - Reaproveite tudo o que está no projeto (cortes, transcrição, legenda, cenas). **Não transcreva de novo** se o corte não mudou.
 - Mude só o que foi pedido, rode o build, abra o preview para o aluno aprovar e só exporte quando ele pedir.
 - Salve o vídeo novo com outro nome (ex.: `final-v2.mp4`) para não apagar o anterior.
+- Projeto antigo, feito antes da versão Remotion (tem `index.html` e não tem `src/Editai.tsx`): crie um projeto novo com `init` a partir do mesmo vídeo bruto e copie para `assets/` do novo os arquivos `keeps.json`, `emphasis.json` e `caption-fixes.json` do antigo; depois `cut` (refaz a cor e o tracking do rosto), transcreva o `clean.mp4` e siga normalmente.
 
 ## Atualizações
 - Quando o aluno disser "atualiza o Editai": rode `python ferramentas/atualizar.py` e conte as novidades em português simples.

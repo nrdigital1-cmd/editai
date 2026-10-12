@@ -86,6 +86,19 @@ def atualizar_montagem(antiga, nova):
         print("  atualizando a ferramenta de montagem...", flush=True)
         subprocess.run([shutil.which("npm") or "npm", "install", "--no-audit", "--no-fund", "--loglevel=error"],
                        cwd=EDITAI, check=True)
+        # navegador usado pelo Remotion para gerar o video (baixa so uma vez)
+        subprocess.run([shutil.which("npx") or "npx", "remotion", "browser", "ensure"], cwd=EDITAI, check=True)
+
+
+def atualizar_python():
+    """Garante o rastreador de rosto (OpenCV 4.x) no Python do Editai."""
+    py = EDITAI / ".python" / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
+    if not py.exists():
+        return
+    tem = subprocess.run([str(py), "-c", "import cv2"], capture_output=True).returncode == 0
+    if not tem:
+        print("  instalando o rastreador de rosto...", flush=True)
+        subprocess.run([str(py), "-m", "pip", "install", "--quiet", "opencv-python-headless==4.14.0.94"], check=True)
 
 
 def novidades(antiga, nova):
@@ -128,6 +141,7 @@ def main():
         copiar_skills()
         if not a.sem_baixar:
             atualizar_montagem(antiga, nova)
+            atualizar_python()
         lista = novidades(antiga, nova)
         if antiga is not None and not lista:
             print("Voce ja tinha a versao mais nova. Nada mudou.")

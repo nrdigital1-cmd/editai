@@ -35,7 +35,8 @@ Deu erro ou a internet caiu? Escreva no Claude: **"Deu erro, continua a instala�
 | FFmpeg | Corta, junta e converte o vídeo |
 | Python | Motor que roda o transcritor |
 | Whisper | Escuta o vídeo e escreve o que você falou, palavra por palavra |
-| Hyperframes | Monta a edição (legendas, imagens, efeitos) e exporta o MP4 |
+| Remotion | Monta a edição (legendas, animações, efeitos), mostra a prévia e exporta o MP4 |
+| OpenCV | Encontra o seu rosto no vídeo para a câmera acompanhar você |
 | Skills do Editai | O manual que ensina o Claude a editar no estilo certo |
 
 Tudo é gratuito para uso pessoal e para criadores individuais.
