@@ -1,6 +1,8 @@
 # Instalador do Editai para Windows
 # Pode rodar quantas vezes quiser: o que ja estiver instalado e pulado.
 
+param([string]$Ferramenta = "claude")   # "claude" (padrao) ou "codex"
+$Nome = if ($Ferramenta -eq "codex") { "Codex" } else { "Claude" }
 $ErrorActionPreference = "Stop"
 $Pacote  = $PSScriptRoot
 # Pasta Documentos de verdade do aluno (funciona mesmo se ela tiver sido movida)
@@ -53,7 +55,7 @@ if (-not (Test-Path (Join-Path $Fonte ".git"))) {
   }
 }
 # Copia kit e skills sem apagar videos, projetos e perfil do aluno
-python (Join-Path $Fonte "kit\ferramentas\atualizar.py") --sem-baixar
+python (Join-Path $Fonte "kit\ferramentas\atualizar.py") --sem-baixar --ferramenta $Ferramenta
 if ($LASTEXITCODE -ne 0) { Falha "Nao consegui montar a pasta Editai. Rode o instalador de novo." }
 Ok "pasta pronta em $Editai e skills instaladas"
 
@@ -84,10 +86,10 @@ Ok "modelo de voz pronto"
 Write-Host ""
 Write-Host "Testando tudo..." -ForegroundColor Cyan
 & $PyVenv (Join-Path $Editai "ferramentas\testar.py")
-if ($LASTEXITCODE -ne 0) { Falha "O teste encontrou um problema (veja acima). Peca ao Claude: 'Deu erro, continua a instalacao de onde parou.'" }
+if ($LASTEXITCODE -ne 0) { Falha "O teste encontrou um problema (veja acima). Peca ao $Nome`: 'Deu erro, continua a instalacao de onde parou.'" }
 
 Write-Host ""
 Write-Host "EDITAI PRONTO!" -ForegroundColor Green
-Write-Host "1. Feche e abra o app do Claude."
-Write-Host "2. Aba Code > escolha a pasta $Editai"
+Write-Host "1. Feche e abra o app do $Nome."
+if ($Ferramenta -eq "codex") { Write-Host "2. No Codex, abra a pasta $Editai" } else { Write-Host "2. Aba Code > escolha a pasta $Editai" }
 Write-Host "3. Coloque seu video em videos-sem-edicao e escreva: edita meu video"

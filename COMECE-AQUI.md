@@ -19,6 +19,17 @@ Bem-vindo! Em uns 20 minutos seu computador vai estar pronto para editar vídeos
 
 Deu erro ou a internet caiu? Escreva no Claude: **"Deu erro, continua a instalação de onde parou."**
 
+## Instalação no Codex (ChatGPT)
+Use este caminho se você usa o **Codex** (app ou terminal) em vez do Claude. O pacote é o mesmo.
+1. Baixe o `editai-main.zip` (botão **Baixar material**) e deixe em **Downloads**.
+2. Abra o **Codex** e escolha a pasta **Downloads**.
+3. Copie o texto abaixo, cole no Codex e envie:
+
+> Instala o Editai para mim. O arquivo do Editai (editai-main.zip) está na pasta Downloads. Extraia, leia o COMECE-AQUI.md e rode o instalador do Codex para o meu sistema (instalar-codex-windows.ps1 no Windows ou instalar-codex-mac.sh no Mac). Explique cada etapa em uma frase simples, sem termos técnicos. Se algo der erro, tente resolver e me diga o que aconteceu. No final, rode o teste do instalador e me confirme se está tudo pronto.
+
+4. Libere as permissões que o Codex pedir (ele precisa acessar a internet e criar pastas).
+5. Depois: abra o Codex na pasta **Editai** (em Documentos) e escreva **"edita meu vídeo"**.
+
 ## Para editar um vídeo
 1. Feche e abra o Claude de novo.
 2. Aba **Code** → escolha a pasta **Editai**, que fica em **Documentos**.

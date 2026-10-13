@@ -1,0 +1,5 @@
+interface:
+  display_name: "Editai — Anúncios"
+  short_description: "Edite vídeos de venda com ilustrações que explicam a fala"
+  brand_color: "#FF6D29"
+  default_prompt: "Use $editai-anuncios-naama para editar meu vídeo com a identidade Editai."

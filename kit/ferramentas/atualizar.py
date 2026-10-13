@@ -4,6 +4,7 @@ Uso:
   python atualizar.py              baixa a versao nova e instala
   python atualizar.py --verificar  so diz se existe versao nova
   python atualizar.py --sem-baixar instala a copia que ja esta no computador (usado pelo instalador)
+  python atualizar.py --ferramenta codex   (so no instalador do Codex)
 """
 import argparse
 import shutil
@@ -24,7 +25,26 @@ def documentos():
 
 EDITAI = documentos() / "Editai"
 FONTE = EDITAI / ".fonte"          # copia do GitHub, o aluno nao mexe aqui
-SKILLS = Path.home() / ".claude" / "skills"
+MARCADOR = EDITAI / ".ferramenta"   # "claude" ou "codex": guarda onde o aluno instalou
+
+
+def pastas_de_skills(ferramenta):
+    """Onde cada ferramenta procura skills."""
+    if ferramenta == "codex":
+        return [Path.home() / ".codex" / "skills", Path.home() / ".agents" / "skills", EDITAI / ".agents" / "skills"]
+    return [Path.home() / ".claude" / "skills"]
+
+
+def ferramenta_atual(escolhida=None):
+    if escolhida:
+        MARCADOR.parent.mkdir(parents=True, exist_ok=True)
+        MARCADOR.write_text(escolhida, encoding="utf-8")
+        return escolhida
+    try:
+        valor = MARCADOR.read_text(encoding="utf-8").strip()
+    except OSError:
+        valor = "claude"
+    return valor if valor in ("claude", "codex") else "claude"
 PASTAS_DO_ALUNO = {"videos-sem-edicao", "projetos", "perfil.json", ".python", "node_modules", ".fonte"}
 
 
@@ -66,15 +86,16 @@ def copiar_kit():
             shutil.copy2(item, destino)
 
 
-def copiar_skills():
-    SKILLS.mkdir(parents=True, exist_ok=True)
-    for skill in (FONTE / "skills").iterdir():
-        if not skill.is_dir():
-            continue
-        destino = SKILLS / skill.name
-        if destino.exists():
-            shutil.rmtree(destino)  # tira arquivos que sairam da versao nova
-        shutil.copytree(skill, destino)
+def copiar_skills(ferramenta):
+    for pasta in pastas_de_skills(ferramenta):
+        pasta.mkdir(parents=True, exist_ok=True)
+        for skill in (FONTE / "skills").iterdir():
+            if not skill.is_dir():
+                continue
+            destino = pasta / skill.name
+            if destino.exists():
+                shutil.rmtree(destino)  # tira arquivos que sairam da versao nova
+            shutil.copytree(skill, destino)
 
 
 def atualizar_montagem(antiga, nova):
@@ -126,6 +147,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--verificar", action="store_true")
     parser.add_argument("--sem-baixar", action="store_true")
+    parser.add_argument("--ferramenta", choices=["claude", "codex"], help="usado pelo instalador; depois fica salvo")
     a = parser.parse_args()
     try:
         if a.verificar:
@@ -138,7 +160,7 @@ def main():
             print("Baixando a versao mais nova do Editai...", flush=True)
             antiga, nova = baixar()
         copiar_kit()
-        copiar_skills()
+        copiar_skills(ferramenta_atual(a.ferramenta))
         if not a.sem_baixar:
             atualizar_montagem(antiga, nova)
             atualizar_python()

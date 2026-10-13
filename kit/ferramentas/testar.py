@@ -34,8 +34,8 @@ try:
 except ImportError:
     checar("Rastreador de rosto", False, "OpenCV nao instalado; rode o instalador de novo")
 
-skills = Path.home() / ".claude" / "skills"
-checar("Skills do Editai", any(skills.glob("editai*")), "skills nao encontradas")
+pastas = [Path.home() / ".claude" / "skills", Path.home() / ".codex" / "skills", Path.home() / ".agents" / "skills"]
+checar("Skills do Editai", any(any(p.glob("editai*")) for p in pastas), "skills nao encontradas")
 
 if shutil.which("ffmpeg"):
     teste = subprocess.run(

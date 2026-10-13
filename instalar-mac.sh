@@ -2,6 +2,8 @@
 # Instalador do Editai para Mac
 # Pode rodar quantas vezes quiser: o que ja estiver instalado e pulado.
 set -e
+FERRAMENTA="${1:-claude}"   # "claude" (padrao) ou "codex"
+[ "$FERRAMENTA" = "codex" ] && NOME="Codex" || NOME="Claude"
 
 PACOTE="$(cd "$(dirname "$0")" && pwd)"
 EDITAI="$HOME/Documents/Editai"
@@ -44,7 +46,7 @@ if [ ! -d "$FONTE/.git" ]; then
   fi
 fi
 # Copia kit e skills sem apagar videos, projetos e perfil do aluno
-python3 "$FONTE/kit/ferramentas/atualizar.py" --sem-baixar \
+python3 "$FONTE/kit/ferramentas/atualizar.py" --sem-baixar --ferramenta "$FERRAMENTA" \
   || falha "Nao consegui montar a pasta Editai. Rode o instalador de novo."
 ok "pasta pronta em $EDITAI e skills instaladas"
 
@@ -69,9 +71,9 @@ ok "modelo de voz pronto"
 # Teste final
 printf "\n\033[36mTestando tudo...\033[0m\n"
 "$VENV/bin/python" "$EDITAI/ferramentas/testar.py" \
-  || falha "O teste encontrou um problema (veja acima). Peca ao Claude: 'Deu erro, continua a instalacao de onde parou.'"
+  || falha "O teste encontrou um problema (veja acima). Peca ao $NOME: 'Deu erro, continua a instalacao de onde parou.'"
 
 printf "\n\033[32mEDITAI PRONTO!\033[0m\n"
-echo "1. Feche e abra o app do Claude."
-echo "2. Aba Code > escolha a pasta $EDITAI"
+echo "1. Feche e abra o app do $NOME."
+if [ "$FERRAMENTA" = "codex" ]; then echo "2. No Codex, abra a pasta $EDITAI"; else echo "2. Aba Code > escolha a pasta $EDITAI"; fi
 echo "3. Coloque seu video em videos-sem-edicao e escreva: edita meu video"
