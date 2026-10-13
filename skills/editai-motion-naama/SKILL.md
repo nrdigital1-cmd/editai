@@ -42,3 +42,4 @@ Use `init --style motion`.
 - **Preview = Remotion Studio**, sempre: rode `npx remotion studio --no-open` na pasta do projeto e abra a URL no painel do navegador da conversa. **Nunca** exporte ou mostre o MP4 final como preview.
 - Conferência interna por quadros com `editai.py still` (todas as trocas de cena e os quadros vizinhos de cada passagem).
 - **O MP4 final só é exportado depois da aprovação do aluno** (`editai.py render PROJETO --aprovado`). Entregar caminho do MP4, cortes feitos e pendências.
+- **Revelação de texto:** nenhuma palavra aparece inteira e seca. Use os 5 efeitos de `Reveal` (fade, posRotScale, scaleTracking, maskY, maskX) com o motor de motion (antecipação, mola, curvas por letra, motion blur). Legenda em `maskY`, impacto em `posRotScale` (ver motion-remotion).

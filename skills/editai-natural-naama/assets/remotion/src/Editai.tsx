@@ -9,7 +9,9 @@ import {BEATS} from './beats';
 import {BlurScale} from './motion/blur';
 import {CURVE, EASE} from './motion/tokens';
 import {ramp, travel} from './motion/core';
-import {HighlightCtx, KeyWord, popStyle, riseStyle} from './motion/text';
+import {HighlightCtx, KeyWord} from './motion/text';
+import {Reveal} from './motion/reveal';
+import {leave} from './motion/core';
 import {Life} from './motion/life';
 
 loadFont({family: 'EditaiHelvetica', url: staticFile('fonts/Helvetica-Regular.otf'), weight: '400'});
@@ -101,7 +103,11 @@ const MotionBackground: React.FC = () => {
 };
 
 const CaptionBlock: React.FC<{c: Caption; f: number}> = ({c, f}) => {
-  const enter = riseStyle(f, c.from, c.to - 6, {dist: 18, curve: CURVE.snappy, outDur: 6});
+  // Cada palavra entra com Reveal (padrão maskY, limpo); a de impacto com posRotScale (overshoot de posição, giro e escala).
+  // O bloco só cuida da saída: recua, acelera para cima e desfoca.
+  const ex = Math.max(0, leave(f, c.to - 6, 6));
+  const enter = {transform: `translateY(${-ex * 24}px)`, opacity: 1 - ex, filter: ex > 0.02 ? `blur(${ex * 6}px)` : undefined};
+  let w = 0;
   return (
     <div
       style={{
@@ -121,15 +127,25 @@ const CaptionBlock: React.FC<{c: Caption; f: number}> = ({c, f}) => {
     >
       {c.lines.map((line, i) => (
         <div key={i}>
-          {line.map((part, j) =>
-            part.key ? (
-              <span key={j} style={{display: 'inline-block', ...popStyle(f, c.from + 2)}}>
-                <KeyWord style={{fontSize: D.impactSize, lineHeight: 0.95}}>{part.text}</KeyWord>
-              </span>
+          {line.map((part, j) => {
+            const at = c.from + w++ * 2; // palavras em cascata (2 quadros)
+            return part.key ? (
+              <Reveal
+                key={j}
+                text={part.text}
+                f={f}
+                at={at + 1}
+                preset="posRotScale"
+                unit="word"
+                wrap={(n) => <KeyWord style={{fontSize: D.impactSize, lineHeight: 0.95}}>{n}</KeyWord>}
+              />
             ) : (
-              <span key={j}>{(j > 0 ? ' ' : '') + part.text}</span>
-            ),
-          )}
+              <React.Fragment key={j}>
+                {j > 0 ? ' ' : ''}
+                <Reveal text={part.text} f={f} at={at} preset={c.anim ?? 'maskY'} />
+              </React.Fragment>
+            );
+          })}
         </div>
       ))}
     </div>

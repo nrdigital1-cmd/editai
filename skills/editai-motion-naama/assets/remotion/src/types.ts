@@ -2,7 +2,7 @@ import type {Highlight} from './motion/text';
 
 export type Layout = 'full' | 'split' | 'motion';
 export type CaptionPart = {text: string; key: boolean};
-export type Caption = {from: number; to: number; top: number; lines: CaptionPart[][]};
+export type Caption = {from: number; to: number; top: number; lines: CaptionPart[][]; anim?: import('./motion/reveal').RevealPreset};
 export type SceneEntry = {from: number; to: number; layout: Layout; component?: string};
 export type Beat = {from: number; to: number; x: number; y: number; w: number; h: number; kind: 'image' | 'component'; src?: string; component?: string; label?: string};
 export type Zoom = {from: number; to: number; scale: number; curve?: string};

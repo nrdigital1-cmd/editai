@@ -4,9 +4,10 @@ import {CURVE, EASE} from './tokens';
 import {clamp01, leave, ramp, travel} from './core';
 import {MotionBlur} from './blur';
 import {KeyWord, popStyle, riseStyle} from './text';
+import {Reveal, pickReveal, type RevealPreset} from './reveal';
 import {Icon} from './ui';
 
-export type Word = {at: number; text?: string; icon?: string; key?: boolean; size?: number; iconSize?: number};
+export type Word = {at: number; text?: string; icon?: string; key?: boolean; size?: number; iconSize?: number; anim?: RevealPreset};
 
 /**
  * A PALAVRA VIRA A CENA (tipografia cinética em fluxo contínuo).
@@ -60,7 +61,9 @@ export const WordScene: React.FC<{words: Word[]; endAt: number; center?: number;
             const next2 = items[k + 2]?.w.at;
             const dim = next === undefined ? 0 : ramp(ff, next, 12, EASE.glide);
             const gone = next2 === undefined ? 0 : ramp(ff, next2, 12, EASE.exit);
-            const enter = it.w.key ? popStyle(ff, it.w.at) : riseStyle(ff, it.w.at, undefined, {dist: 70, curve: CURVE.snappy});
+            // texto: o Reveal faz a entrada; so o icone usa a subida/pop do bloco
+            const enter = it.w.icon ? (it.w.key ? popStyle(ff, it.w.at) : riseStyle(ff, it.w.at, undefined, {dist: 70, curve: CURVE.snappy})) : {};
+            const anim = it.w.anim ?? (it.w.key ? 'posRotScale' : pickReveal(`${k}-${it.w.text}`, ['maskY', 'scaleTracking', 'maskX', 'fade']));
             return (
               <div
                 key={k}
@@ -82,10 +85,19 @@ export const WordScene: React.FC<{words: Word[]; endAt: number; center?: number;
                 <div style={enter}>
                   {it.w.icon ? (
                     <Icon name={it.w.icon} f={ff} drawAt={it.w.at + 1} size={it.w.iconSize ?? 220} color={color} />
-                  ) : it.w.key ? (
-                    <KeyWord>{it.w.text}</KeyWord>
                   ) : (
-                    it.w.text
+                    (it.w.text ?? '').split('\n').map((linha, li) => (
+                      <div key={li}>
+                        <Reveal
+                          text={linha}
+                          f={ff}
+                          at={it.w.at + li * 3}
+                          preset={anim}
+                          unit={it.w.key ? 'word' : 'glyph'}
+                          wrap={it.w.key ? (n) => <KeyWord>{n}</KeyWord> : undefined}
+                        />
+                      </div>
+                    ))
                   )}
                 </div>
               </div>

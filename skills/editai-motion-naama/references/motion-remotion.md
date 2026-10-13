@@ -89,3 +89,23 @@ defina: curva, antecipação, o que reage ao impacto (ação secundária) e para
   impressa no painel do navegador da conversa. Nunca renderize o MP4 para mostrar um preview.
 - Conferência interna: `editai.py still PROJETO --at 0.5,2.6,...` (PNG em `snapshots/`).
 - **MP4 final só depois da aprovação explícita do aluno**: `editai.py render PROJETO --aprovado`.
+
+## Revelação de texto (a palavra nunca aparece inteira)
+Toda palavra entra com um dos 5 efeitos de `motion/reveal.tsx` (`<Reveal text f at out preset unit wrap />`).
+Todos usam o motor do Editai: antecipação, slow-in, mola com overshoot ao chegar, curva diferente por letra,
+motion blur proporcional à velocidade e saída que recua e acelera.
+
+| Preset | Nome | O que faz | Quando usar |
+|---|---|---|---|
+| `fade` | Ease Fade Together | Letras juntas, fade com ease, desfoque que some e subida curta | Frases calmas, transições suaves, textos secundários |
+| `posRotScale` | Overshoot Position & Rotate & Scale | Letra a letra: sobe girando e crescendo, passa do ponto e assenta | **Palavra de impacto** (padrão do destaque) |
+| `scaleTracking` | Overshoot Scale & Tracking | A palavra encolhe de grande e as letras se juntam, com overshoot | Números, nomes, títulos curtos |
+| `maskY` | Overshoot Position & Mask Y | Cada letra sobe de dentro de uma máscara, com overshoot | **Legenda corrida** (padrão), listas |
+| `maskX` | Overshoot Position & Mask X | Desliza da esquerda para a direita de dentro de uma máscara | Sequências, "antes → depois", passos |
+
+- **Legenda:** palavras normais em `maskY` (troque com `anim` na legenda), palavra de impacto em `posRotScale` com gradiente.
+  As palavras entram em cascata (2 quadros entre elas); o bloco só cuida da saída.
+- **Tipografia cinética (`WordScene`):** cada palavra pode ter `anim`; sem ele, impacto = `posRotScale` e as demais
+  variam de forma estável entre `maskY`, `scaleTracking`, `maskX` e `fade` (sempre o mesmo efeito para a mesma palavra).
+- **Palavra de impacto:** use `unit="word"` com `wrap={(n) => <KeyWord>{n}</KeyWord>}` para o gradiente ficar contínuo.
+- Escolha o efeito pelo sentido da fala (princípio da animação), não por sorteio. Evite mais de 2 efeitos diferentes na mesma tela.
