@@ -12,7 +12,7 @@ Bem-vindo! Em uns 20 minutos seu computador vai estar pronto para editar vídeos
 2. Abra o app do Claude → aba **Code** → escolha a pasta **Downloads**.
 3. Copie o texto abaixo, cole no Claude e envie:
 
-> Instala o Editai para mim. O arquivo do Editai (editai-main.zip) está na pasta Downloads. Extraia, leia o COMECE-AQUI.md e rode o instalador do meu sistema (instalar-windows.ps1 no Windows ou instalar-mac.sh no Mac). Explique cada etapa em uma frase simples, sem termos técnicos. Se algo der erro, tente resolver e me diga o que aconteceu. No final, rode o teste do instalador e me confirme se está tudo pronto.
+> Vou instalar o Editai. O arquivo editai-main.zip está na pasta Downloads. Primeiro, só verifique o meu computador (sistema, Git, Node, FFmpeg e Python) e me diga, em português simples, o que já está pronto e o que falta, sem instalar nada ainda. Depois que eu responder "pode instalar", extraia o zip, leia o COMECE-AQUI.md e rode o instalador do meu sistema (instalar-windows.ps1 no Windows ou instalar-mac.sh no Mac), instalando só o que falta e sem mexer no que já funciona. Explique cada etapa em uma frase. Se algo der erro, tente resolver e me conte o que aconteceu. No final, rode o teste do instalador e me confirme se está tudo pronto.
 
 4. Quando aparecer um pedido de permissão, clique em **Permitir**. No Windows, clique em **Sim** se o sistema perguntar. No Mac, digite a senha do computador se pedir (ela não aparece enquanto você digita, é normal).
 5. Espere aparecer **EDITAI PRONTO**.
@@ -25,7 +25,7 @@ Use este caminho se você usa o **Codex** (app ou terminal) em vez do Claude. O 
 2. Abra o **Codex** e escolha a pasta **Downloads**.
 3. Copie o texto abaixo, cole no Codex e envie:
 
-> Instala o Editai para mim. O arquivo do Editai (editai-main.zip) está na pasta Downloads. Extraia, leia o COMECE-AQUI.md e rode o instalador do Codex para o meu sistema (instalar-codex-windows.ps1 no Windows ou instalar-codex-mac.sh no Mac). Explique cada etapa em uma frase simples, sem termos técnicos. Se algo der erro, tente resolver e me diga o que aconteceu. No final, rode o teste do instalador e me confirme se está tudo pronto.
+> Vou instalar o Editai. O arquivo editai-main.zip está na pasta Downloads. Primeiro, só verifique o meu computador (sistema, Git, Node, FFmpeg e Python) e me diga, em português simples, o que já está pronto e o que falta, sem instalar nada ainda. Depois que eu responder "pode instalar", extraia o zip, leia o COMECE-AQUI.md e rode o instalador do Codex para o meu sistema (instalar-codex-windows.ps1 no Windows ou instalar-codex-mac.sh no Mac), instalando só o que falta e sem mexer no que já funciona. Explique cada etapa em uma frase. Se algo der erro, tente resolver e me conte o que aconteceu. No final, rode o teste do instalador e me confirme se está tudo pronto.
 
 4. Libere as permissões que o Codex pedir (ele precisa acessar a internet e criar pastas).
 5. Depois: abra o Codex na pasta **Editai** (em Documentos) e escreva **"edita meu vídeo"**.
