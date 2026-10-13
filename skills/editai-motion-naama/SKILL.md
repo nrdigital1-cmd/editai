@@ -43,3 +43,5 @@ Use `init --style motion`.
 - Conferência interna por quadros com `editai.py still` (todas as trocas de cena e os quadros vizinhos de cada passagem).
 - **O MP4 final só é exportado depois da aprovação do aluno** (`editai.py render PROJETO --aprovado`). Entregar caminho do MP4, cortes feitos e pendências.
 - **Revelação de texto:** nenhuma palavra aparece inteira e seca. Use os 5 efeitos de `Reveal` (fade, posRotScale, scaleTracking, maskY, maskX) com o motor de motion (antecipação, mola, curvas por letra, motion blur). Legenda em `maskY`, impacto em `posRotScale` (ver motion-remotion).
+
+- **Gancho (obrigatório):** nos primeiros ~5 s a pessoa aparece na tela e um **título entra acima da cabeça**. Escreva `assets/hook.json` com o título (até 3 linhas curtas, palavra de impacto com `"key": true`) e o `fim` do gancho (2–6 s, termina com a frase do gancho). O build recusa o vídeo sem ele, com a primeira cena fora da tela cheia ou com prints/elementos por cima nesse trecho.

@@ -106,3 +106,17 @@ python "$SKILL/scripts/editai.py" render "$PROJETO" --aprovado
 ```
 
 O render salva `renders/final.mp4` (alterações viram `final-v2.mp4`, `final-v3.mp4`... sem apagar o anterior). Verifique áudio, sincronia, fps e duração com ffprobe. Salve em `VERIFY.md` o que realmente foi conferido e as pendências. Entregue o caminho do MP4, cortes feitos, fontes dos prints e dúvidas. Não publique nem envie a terceiros.
+
+## Gancho: pessoa na tela + título acima da cabeça (obrigatório)
+Nos primeiros segundos (até o fim da frase do gancho, ~5 s) a pessoa aparece em tela cheia e um título curto entra
+acima da cabeça, palavra a palavra (Reveal), e sai no fim do gancho.
+
+`assets/hook.json`:
+```json
+{"linhas": [[{"text": "Eu gastava"}], [{"text": "2 horas", "key": true}]], "fim": 4.8}
+```
+- Título = a ideia do gancho em até ~6 palavras (não copie a frase inteira da legenda). Impacto com `"key": true`.
+- `fim` = segundo em que a frase do gancho termina (entre 2 e 6).
+- Motion: a cena 0 é `full`, começa em 0, vai até pelo menos `fim` e não tem componente.
+- Natural/anúncios: nenhum beat começa antes de `fim`.
+- O título fica com a base 30 px acima de `head_top`; se não couber na área segura, encurte ou ajuste `hook_size`.

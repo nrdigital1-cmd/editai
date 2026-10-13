@@ -26,13 +26,15 @@ export type EditData = {
   lightBackground: boolean;
   blurScale: number;
   captions: Caption[];
+  hook: {from: number; to: number; bottom: number; safeTop: number; height: number; lines: CaptionPart[][]} | null; // título do gancho acima da cabeça
+  hookSize: number;
   scenes: SceneEntry[];
   beats: Beat[];
   sfx: Sfx[];
   faceOrigin: {x: number; y: number}; // centro do rosto em % do quadro (origem do zoom)
   faceZoom: {base: number; breathing: boolean; breathingAmp: number; breathingPeriod: number};
   zooms: Zoom[]; // punches de ênfase (quadros)
-  faceTrack: {x: number[]; y: number[]} | null; // centro do rosto por quadro (0–1), de `editai.py track`
+  faceTrack: {x: number[]; y: number[]; s?: number[]; sRef?: number} | null; // centro do rosto por quadro (0–1), de `editai.py track`
   faceTracking: {targetX: number; targetY: number; maxZoom: number}; // onde manter o rosto (%) e zoom máximo
 };
 

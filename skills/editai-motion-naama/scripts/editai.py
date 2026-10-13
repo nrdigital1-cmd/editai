@@ -446,11 +446,13 @@ def track(a):
             out[i] = out[i + 1] + alpha * (out[i] - out[i + 1])
         return out
     sx, sy = smooth(held[0]), smooth(held[1])
+    ss = smooth(med[2])  # tamanho do rosto (fração da largura): mostra onde fica o topo da cabeça
     duration = float(probe(src)["format"]["duration"])
     tt = np.arange(0, duration, 1 / FPS)
     ts = t / SFPS
     data = {"clean_sha256": fingerprint(clean), "fps": FPS, "detected": round(len(found) / len(raw), 3),
-            "x": [round(float(v), 4) for v in np.interp(tt, ts, sx)], "y": [round(float(v), 4) for v in np.interp(tt, ts, sy)]}
+            "x": [round(float(v), 4) for v in np.interp(tt, ts, sx)], "y": [round(float(v), 4) for v in np.interp(tt, ts, sy)],
+            "s": [round(float(v), 4) for v in np.interp(tt, ts, ss)]}
     write(assets / "face-track.json", data)
     print(f"Rosto rastreado em {data['detected']*100:.0f}% das amostras; câmera vai acompanhar o rosto.")
 
@@ -486,6 +488,34 @@ def build(a):
 
     scenes, beats, captions, hits = [], [], [], []
     scene_names, beat_names = set(), set()
+
+    # GANCHO (obrigatorio): nos primeiros segundos a pessoa aparece e um titulo entra acima da cabeca
+    hook_file = assets / "hook.json"
+    if not hook_file.exists():
+        raise ValueError('Falta o título do gancho: crie assets/hook.json, ex.: {"linhas": [[{"text": "Eu gastava"}], '
+                         '[{"text": "2 horas", "key": true}]], "fim": 4.8}')
+    hook_cfg = read(hook_file)
+    hook_lines = hook_cfg.get("linhas") or []
+    if not hook_lines or not all(isinstance(l, list) and l and all(isinstance(p, dict) and str(p.get("text", "")).strip() for p in l) for l in hook_lines):
+        raise ValueError("hook.json: 'linhas' precisa ser uma lista de linhas, cada uma com partes {\"text\": ..., \"key\": true/false}.")
+    if len(hook_lines) > 3 or sum(len(str(p["text"])) for l in hook_lines for p in l) > 42:
+        raise ValueError("hook.json: título longo demais. Use até 3 linhas curtas (cerca de 6 palavras).")
+    hook_end = float(hook_cfg.get("fim", min(5.0, duration)))
+    if not (2.0 <= hook_end <= min(6.0, duration)):
+        raise ValueError("hook.json: 'fim' deve ficar entre 2 e 6 segundos (o gancho dura cerca de 5 s).")
+    hook_bottom = int(lay.get("head_top", 700)) - 30
+    safe_top = 270 if style == "anuncios" else int(lay.get("top_min", 150))  # anúncios: área segura da Meta
+    linhas_alt = sum(1.35 if any(p.get("key") for p in l) else 1.05 for l in hook_lines)
+    # o título diminui sozinho até caber acima da cabeça; abaixo de 56 px fica pequeno demais para ler
+    hook_size = int(min(int(cfg.get("hook_size", 92)), (hook_bottom - safe_top) / linhas_alt))
+    if hook_size < 56:
+        raise ValueError("O título do gancho não cabe acima da cabeça: encurte para 1 linha ou reenquadre "
+                         "(deixe mais espaço acima da cabeça na gravação).")
+    hook = {"from": 0, "to": fr(hook_end), "bottom": hook_bottom, "safeTop": safe_top, "height": round(hook_size * linhas_alt),
+            "lines": [[{"text": str(p["text"]).strip(), "key": bool(p.get("key"))} for p in l] for l in hook_lines]}
+    hits.append((0.12, "whoosh"))
+    if any(p["key"] for l in hook["lines"] for p in l):
+        hits.append((0.45, "pop"))
     if style == "motion":
         plan = read(assets / "scenes.json")
         previous = 0.0
@@ -505,8 +535,10 @@ def build(a):
                 hits += [(float(s["start"]) + float(t) / FPS, "pop") for t in re.findall(r"at:\s*([\d.]+)[^}]*key:\s*true", code)]
             scenes.append({"from": fr(s["start"]), "to": fr(s["end"]), "layout": s["layout"], "component": comp})
         hits += [(float(s["start"]) - 0.1, "whoosh") for s in plan[1:]]
-        if plan and plan[0].get("component"):
-            hits.append((0.05, "whoosh"))
+        if not plan or plan[0]["layout"] != "full" or float(plan[0]["start"]) > 0.001 or float(plan[0]["end"]) < hook_end - 0.05:
+            raise ValueError(f"Cena 0 é o gancho: precisa ser layout 'full' (pessoa na tela) de 0 até pelo menos {hook_end:.1f} s.")
+        if plan[0].get("component"):
+            raise ValueError("Cena 0 é o gancho: sem componente. O título acima da cabeça vem de assets/hook.json.")
 
         def layout_at(t):
             return next((s["layout"] for s in plan if float(s["start"]) <= t < float(s["end"])), "full")
@@ -532,6 +564,8 @@ def build(a):
         for i, beat in enumerate(plan):
             start, end = float(beat["start"]), float(beat["end"])
             x, y, w, h = [float(beat[k]) for k in ["x", "y", "width", "height"]]
+            if start < hook_end:
+                raise ValueError(f"Beat {i}: começa no gancho (antes de {hook_end:.1f} s). Nos primeiros segundos, acima da cabeça fica só o título do gancho.")
             if not (0 <= start < end <= duration + 0.001 and 65 <= x and x + w <= 1015 and y >= lay["top_min"] and y + h <= lay["head_top"] - 24):
                 raise ValueError(f"Beat {i} fora da duração ou da zona acima da cabeça.")
             item = {"from": fr(start), "to": fr(end), "x": x, "y": y, "w": w, "h": h, "label": beat.get("label", "")}
@@ -590,7 +624,8 @@ def build(a):
             if ft.get("clean_sha256") != fingerprint(clean):
                 raise ValueError("Face tracking desatualizado: rode `editai.py track` novamente.")
             if ft["x"]:
-                face_track = {"x": ft["x"], "y": ft["y"]}
+                sz = ft.get("s", [])
+                face_track = {"x": ft["x"], "y": ft["y"], "s": sz, "sRef": float(sorted(sz)[len(sz) // 2]) if sz else 0}
                 if ftc["target_y"] is None:
                     # altura natural do rosto neste vídeo (mediana): centraliza na horizontal e só estabiliza na vertical
                     ys = sorted(ft["y"])
@@ -614,6 +649,7 @@ def build(a):
         "captionSize": cfg["caption_size"], "impactSize": cfg["impact_size"], "trackingEm": float(cfg["tracking_em"]),
         "lightBackground": bool(cfg.get("light_background", False)), "blurScale": 0.5 if modo_leve(cfg) else 1,
         "captions": captions, "scenes": scenes, "beats": beats, "sfx": sfx_list(hits, duration, cfg),
+        "hook": hook, "hookSize": hook_size,
         "faceOrigin": face_origin, "zooms": zooms, "faceTrack": face_track,
         "faceTracking": {"targetX": float(ftc["target_x"]), "targetY": float(ftc["target_y"]) if ftc["target_y"] is not None else face_origin["y"],
                          "maxZoom": float(ftc["max_zoom"])},

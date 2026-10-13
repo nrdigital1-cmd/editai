@@ -52,7 +52,7 @@ const faceZoomAt = (f: number, fps: number) => {
  */
 const SRC_W = 1080;
 const SRC_H = 1920;
-const trackedCamera = (f: number, fps: number, box: {w: number; h: number}, targetY: number) => {
+const cameraAt = (f: number, fps: number, box: {w: number; h: number}, targetY: number) => {
   const zoom = faceZoomAt(f, fps);
   const k = Math.max(box.w / SRC_W, box.h / SRC_H); // cover
   const dw = SRC_W * k;
@@ -76,7 +76,22 @@ const trackedCamera = (f: number, fps: number, box: {w: number; h: number}, targ
   const S = Math.min(Math.max(1, need), Math.max(zoom, D.faceTracking.maxZoom));
   const Tx = Math.min(0, Math.max(box.w - S * box.w, tx - S * fx));
   const Ty = Math.min(0, Math.max(box.h - S * box.h, ty - S * fy));
-  return `translate(${Tx}px, ${Ty}px) scale(${S}) translateZ(0)`;
+  return {S, Tx, Ty, fy, dw, dh, offY, i};
+};
+const trackedCamera = (f: number, fps: number, box: {w: number; h: number}, targetY: number) => {
+  const c = cameraAt(f, fps, box, targetY);
+  return `translate(${c.Tx}px, ${c.Ty}px) scale(${c.S}) translateZ(0)`;
+};
+
+/** Onde está o topo da cabeça NA TELA neste quadro (segue o rastreio e o zoom da câmera). */
+const headTopOnScreen = (f: number, headTop: number) => {
+  const c = cameraAt(f, D.fps, {w: 1080, h: 1920}, D.faceTracking.targetY / 100);
+  const faceBase = c.offY + (D.faceOrigin.y / 100) * c.dh; // centro do rosto no enquadramento de referência
+  const s = D.faceTrack?.s;
+  const ref = D.faceTrack?.sRef ?? 0;
+  // distância centro→topo da cabeça medida no vídeo (head_top), escalada pelo tamanho do rosto neste quadro
+  const k = s && s.length && ref > 0 ? s[Math.min(s.length - 1, c.i)] / ref : 1;
+  return c.Ty + c.S * (c.fy - (faceBase - headTop) * k);
 };
 
 const layoutAt = (frame: number): Layout => D.scenes.find((s) => frame >= s.from && frame < s.to)?.layout ?? 'full';
@@ -144,6 +159,62 @@ const CaptionBlock: React.FC<{c: Caption; f: number}> = ({c, f}) => {
                 {j > 0 ? ' ' : ''}
                 <Reveal text={part.text} f={f} at={at} preset={c.anim ?? 'maskY'} />
               </React.Fragment>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/**
+ * TÍTULO DO GANCHO: nos primeiros segundos a pessoa está na tela e o título entra ACIMA DA CABEÇA,
+ * palavra a palavra (maskY; impacto em posRotScale com gradiente). Sai recuando, subindo e desfocando no fim do gancho.
+ */
+const HookTitle: React.FC<{f: number}> = ({f}) => {
+  const h = D.hook;
+  if (!h || f > h.to + 12) return null;
+  const ex = Math.max(0, leave(f, h.to - 8, 8));
+  let w = 0;
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 60,
+        width: 960,
+        // acompanha a cabeça quadro a quadro (zoom/rastreio), sempre 30 px acima dela
+        // nunca acima da área segura (o título inteiro cabe abaixo de safeTop)
+        bottom: D.height - Math.max(h.safeTop + h.height, Math.min(h.bottom, headTopOnScreen(f, h.bottom + 30) - 30)),
+        textAlign: 'center',
+        color: '#fff',
+        fontFamily: 'EditaiHelvetica, Helvetica, sans-serif',
+        fontSize: D.hookSize,
+        lineHeight: 1.02,
+        letterSpacing: `${D.trackingEm}em`,
+        transform: `translateY(${-ex * 40}px)`,
+        opacity: 1 - ex,
+        filter: ex > 0.02 ? `blur(${ex * 8}px)` : undefined,
+      }}
+    >
+      {h.lines.map((line, i) => (
+        <div key={i}>
+          {line.map((part, j) => {
+            const at = h.from + 4 + w++ * 4; // entra logo depois do primeiro quadro, palavra a palavra
+            return part.key ? (
+              <Reveal
+                key={j}
+                text={part.text}
+                f={f}
+                at={at + 2}
+                preset="posRotScale"
+                unit="word"
+                wrap={(n) => <KeyWord style={{fontSize: D.hookSize * 1.3, lineHeight: 0.95}}>{n}</KeyWord>}
+              />
+            ) : (
+              <span key={j} style={{textShadow: '0 4px 18px rgba(0,0,0,.45)'}}>
+                {j > 0 ? ' ' : ''}
+                <Reveal text={part.text} f={f} at={at} preset="maskY" />
+              </span>
             );
           })}
         </div>
@@ -248,6 +319,8 @@ export const Editai: React.FC = () => {
               </Life>
             );
           })}
+
+          <HookTitle f={f} />
 
           {D.captions.map((c, i) => (f >= c.from - 4 && f < c.to + 2 ? <CaptionBlock key={i} c={c} f={f} /> : null))}
 
